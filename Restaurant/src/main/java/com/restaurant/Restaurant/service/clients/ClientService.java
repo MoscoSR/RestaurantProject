@@ -1,5 +1,5 @@
 package com.restaurant.Restaurant.service.clients;
-import com.restaurant.Restaurant.models.Client;
+import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.models.dto.ClientDTO;
 import com.restaurant.Restaurant.repository.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,14 +15,14 @@ public class ClientService {
         this.clientRepository = clientRepository;
     }
 
-    public Client getClienteById(Long id) {
+    public ClientEntity getClienteById(Long id) {
         return clientRepository.findById(id).orElse(null);
     }
-    public void createClient(Client client){
+    public void createClient(ClientEntity client){
          clientRepository.save(client);
     }
-    public Client updateCliente(ClientDTO updatedClient) throws EntityNotFoundException {
-        Client existingClient = clientRepository.findById(updatedClient.getId()).orElseThrow(() -> new EntityNotFoundException("Client with ID " + updatedClient.getId() + " not found"));
+    public ClientEntity updateCliente(ClientDTO updatedClient) throws EntityNotFoundException {
+        ClientEntity existingClient = clientRepository.findById(updatedClient.getId()).orElseThrow(() -> new EntityNotFoundException("Client with ID " + updatedClient.getId() + " not found"));
         return clientRepository.save(existingClient);
     }
     public void deleteCliente(Long id){
