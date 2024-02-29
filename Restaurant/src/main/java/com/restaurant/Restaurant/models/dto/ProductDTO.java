@@ -6,6 +6,7 @@ import java.util.UUID;
 
 @Data
 public class ProductDTO {
+
     private UUID uuid;
     private String fantasyName;
     private ProductEntity.Category category;

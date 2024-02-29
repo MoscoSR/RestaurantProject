@@ -1,10 +1,12 @@
 package com.restaurant.Restaurant.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 
 @Entity
 @Table
+@Data
 public class ClientEntity {
 
     @Id
