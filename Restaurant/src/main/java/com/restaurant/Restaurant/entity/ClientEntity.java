@@ -1,11 +1,11 @@
-package com.restaurant.Restaurant.models;
+package com.restaurant.Restaurant.entity;
 
 import jakarta.persistence.*;
 
 
 @Entity
 @Table
-public class Client {
+public class ClientEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
