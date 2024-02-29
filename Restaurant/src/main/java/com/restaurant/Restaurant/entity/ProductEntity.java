@@ -1,10 +1,18 @@
 package com.restaurant.Restaurant.entity;
+import lombok.*;
+
+import java.util.*;
+
+
 import jakarta.persistence.*;
 
 import java.util.*;
 
-@Entity
-@Table
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductEntity {
 
     public enum Category{
@@ -12,6 +20,8 @@ public class ProductEntity {
     }
 
     @Id
+    private Long id;
+
     @Column(name = "product_uuid", nullable = false)
     private UUID uuid;
 
