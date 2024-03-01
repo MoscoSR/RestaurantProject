@@ -1,6 +1,7 @@
 package com.restaurant.Restaurant.controller;
 
 import com.restaurant.Restaurant.entity.ProductEntity;
+import com.restaurant.Restaurant.models.dto.ProductDTO;
 import com.restaurant.Restaurant.service.products.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,7 @@ public class ProductController {
     }
 
     @GetMapping(path = "/{id}")
-    public ProductEntity getProductById (@PathVariable Long id){
+    public ProductDTO getProductById (@PathVariable Long id){
         return service.getById(id);
     }
 

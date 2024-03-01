@@ -1,10 +1,12 @@
 package com.restaurant.Restaurant.models.dto;
 
 import com.restaurant.Restaurant.entity.ProductEntity;
+import lombok.Builder;
 import lombok.Data;
 import java.util.UUID;
 
 @Data
+@Builder
 public class ProductDTO {
 
     private UUID uuid;
