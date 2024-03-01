@@ -2,7 +2,7 @@ package com.restaurant.Restaurant.service.products;
 
 public interface IProductService {
 
-    public String getProduct ();
+    public String getAllProducts ();
 
     public String createProduct();
 
