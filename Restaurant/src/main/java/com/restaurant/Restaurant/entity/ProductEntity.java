@@ -1,13 +1,16 @@
 package com.restaurant.Restaurant.entity;
+
 import lombok.*;
 
 import java.util.*;
+
 
 
 import jakarta.persistence.*;
 
 import java.util.*;
 
+@Entity
 @Builder
 @Getter
 @Setter
@@ -20,6 +23,7 @@ public class ProductEntity {
     }
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "product_uuid", nullable = false)
