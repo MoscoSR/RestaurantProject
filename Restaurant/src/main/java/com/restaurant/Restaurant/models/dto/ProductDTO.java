@@ -9,7 +9,7 @@ import java.util.UUID;
 @Builder
 public class ProductDTO {
 
-    private UUID uuid;
+    private String uuid;
     private String fantasyName;
     private ProductEntity.Category category;
     private String description;
