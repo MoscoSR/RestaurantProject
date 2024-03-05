@@ -16,6 +16,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "product")
 public class ProductEntity {
 
     public enum Category{
@@ -26,10 +27,10 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "product_uuid", nullable = false)
-    private UUID uuid;
+    @Column(name = "uuid", nullable = false)
+    private String uuid;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "fantasy_name", nullable = false)
     private String fantasyName;
 
     @Column(name = "category", nullable = false)

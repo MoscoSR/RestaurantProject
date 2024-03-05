@@ -1,9 +1,10 @@
 package com.restaurant.Restaurant.controller;
 
-import com.restaurant.Restaurant.entity.ProductEntity;
 import com.restaurant.Restaurant.models.dto.ProductDTO;
-import com.restaurant.Restaurant.service.products.ProductServiceImpl;
+import com.restaurant.Restaurant.service.products.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,32 +12,38 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
 
     @Autowired
-    ProductServiceImpl service;
+    ProductService productService;
 
-//    @GetMapping(path = "/{uuid}")
-//    public String getProduct (){
-//        return  service.getProduct();
-//    }
+    @GetMapping(path = "/{uuid}")
+    public ResponseEntity<?> getProductById (@PathVariable String uuid){
+        try {
+            ProductDTO productDTO=productService.getProductByUuid(uuid);
+            if (productDTO!=null){
+                return ResponseEntity.ok(productDTO);
+            }else{
+                return ResponseEntity.status(404).body("Producto no encontrado");
+            }
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(400).body("Formato de UUID invalido");
+        }catch (Exception e){
+            return ResponseEntity.status(500).body("Error general del servidor: "+e.getMessage());
+        }
 
+    }
     @PostMapping
-    public String createProduct (){
-        return  service.createProduct();
+    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDTO productDTO){
+        try{
+            ProductDTO product=productService.createProduct(productDTO);
+            return ResponseEntity.status(201).body(product);
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(409).body(e);
+        }catch (Exception e){
+            return ResponseEntity.status(500).body("Error general del servidor");
+        }
     }
 
-    @PutMapping(path = "/{uuid}")
-    public String updateProduct (){
-        return  service.updateProduct();
-    }
 
 
-    @DeleteMapping(path = "/{uuid}")
-    public String deleteProduct (){
-        return  service.deleteProduct();
-    }
 
-    @GetMapping(path = "/{id}")
-    public ProductDTO getProductById (@PathVariable Long id){
-        return service.getById(id);
-    }
 
 }
