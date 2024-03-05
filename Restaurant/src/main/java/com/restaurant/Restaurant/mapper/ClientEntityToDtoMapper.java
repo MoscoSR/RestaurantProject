@@ -13,6 +13,7 @@ public class ClientEntityToDtoMapper implements Converter<ClientEntity, ClientDT
     @Override
     public ClientDTO convert(ClientEntity clientEntity) {
         return ClientDTO.builder()
+                .id(clientEntity.getId())
                 .name(clientEntity.getName())
                 .document(clientEntity.getDocument())
                 .email(clientEntity.getEmail())

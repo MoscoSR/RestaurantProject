@@ -11,7 +11,7 @@ public class ClientEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "client_id", nullable = false)
+    @Column(name = "id", nullable = false)
     public Long id;
 
     @Column(name = "document", nullable = false)
@@ -26,7 +26,7 @@ public class ClientEntity {
     @Column(name = "phone")
     public String phone;
 
-    @Column(name = "deliveryAddress")
+    @Column(name = "delivery_address")
     public String deliveryAddress;
 
 }

@@ -37,7 +37,7 @@ public class ClientService  implements IClientService{
         ClientEntity  clientEntity = new ClientEntity();
         clientEntity.setName(clientDTO.getName());
         clientEntity.setDocument(clientDTO.getDocument());
-        clientEntity.setEmail(clientEntity.getEmail());
+        clientEntity.setEmail(clientDTO.getEmail());
         clientEntity.setPhone(clientDTO.getPhone());
         clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
         clientRepository.save(clientEntity);
@@ -49,7 +49,7 @@ public class ClientService  implements IClientService{
         ClientEntity clientEntity = clientRepository.findById(id).orElse(null);
         clientEntity.setName(clientDTO.getName());
         clientEntity.setDocument(clientDTO.getDocument());
-        clientEntity.setEmail(clientEntity.getEmail());
+        clientEntity.setEmail(clientDTO.getEmail());
         clientEntity.setPhone(clientDTO.getPhone());
         clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
         clientRepository.save(clientEntity);

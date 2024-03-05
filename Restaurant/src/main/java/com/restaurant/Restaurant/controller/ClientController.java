@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*;
 public class ClientController {
 
     private  ClientService clientService;
+
+    public ClientController( ClientService clientService){
+        this.clientService = clientService;
+    }
+
     @PostMapping("/clients")
     public ResponseEntity<?> createClient(@RequestBody ClientDTO clientDTO) {
         try {
