@@ -1,31 +1,63 @@
 package com.restaurant.Restaurant.service.clients;
 import com.restaurant.Restaurant.entity.ClientEntity;
+import com.restaurant.Restaurant.mapper.ClientEntityToDtoMapper;
 import com.restaurant.Restaurant.models.dto.ClientDTO;
 import com.restaurant.Restaurant.repository.ClientRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
-public class ClientService {
-    private final ClientRepository clientRepository;
+public class ClientService  implements IClientService{
 
     @Autowired
-    public ClientService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
+    private ClientRepository clientRepository;
+
+    @Autowired
+    private ClientEntityToDtoMapper mapper;
+
+    @Override
+    public List<ClientDTO> getClients() {
+        List<ClientEntity> clients = clientRepository.findAll();
+        return clients.stream()
+                .map(mapper::convert)
+                .collect(Collectors.toList());
     }
 
-    public ClientEntity getClienteById(Long id) {
-        return clientRepository.findById(id).orElse(null);
+    @Override
+    public ClientDTO getClient(Long id) {
+        ClientEntity clientEntity = clientRepository.findById(id).orElse(null);
+        return mapper.convert(clientEntity);
     }
-    public void createClient(ClientEntity client){
-         clientRepository.save(client);
+
+    @Override
+    public ClientDTO createClient(ClientDTO clientDTO) {
+        ClientEntity  clientEntity = new ClientEntity();
+        clientEntity.setName(clientDTO.getName());
+        clientEntity.setDocument(clientDTO.getDocument());
+        clientEntity.setEmail(clientEntity.getEmail());
+        clientEntity.setPhone(clientDTO.getPhone());
+        clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
+        clientRepository.save(clientEntity);
+        return mapper.convert(clientEntity);
     }
-    public ClientEntity updateCliente(ClientDTO updatedClient) throws EntityNotFoundException {
-        ClientEntity existingClient = clientRepository.findById(updatedClient.getId()).orElseThrow(() -> new EntityNotFoundException("Client with ID " + updatedClient.getId() + " not found"));
-        return clientRepository.save(existingClient);
+
+    @Override
+    public ClientDTO updateClient(Long id, ClientDTO clientDTO) {
+        ClientEntity clientEntity = clientRepository.findById(id).orElse(null);
+        clientEntity.setName(clientDTO.getName());
+        clientEntity.setDocument(clientDTO.getDocument());
+        clientEntity.setEmail(clientEntity.getEmail());
+        clientEntity.setPhone(clientDTO.getPhone());
+        clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
+        clientRepository.save(clientEntity);
+        return mapper.convert(clientEntity);
     }
-    public void deleteCliente(Long id){
-         clientRepository.deleteById(id);
+
+    @Override
+    public void deleteClient(Long id) {
+        clientRepository.deleteById(id);
     }
 }
