@@ -1,12 +1,15 @@
 package com.restaurant.Restaurant.service.clients;
 
+import com.restaurant.Restaurant.models.dto.ClientDTO;
+
+import java.util.List;
+
 public interface IClientService {
-    public String getClients();
+    List<ClientDTO> getClients();
 
-    public String createClient();
-
-    public String updateClient();
-
-    public String deleteClient();
-
+    ClientDTO getClient(Long id);
+    ClientDTO createClient(ClientDTO clientDTO);
+    ClientDTO updateClient(Long id, ClientDTO clientDTO);
+    void deleteClient(Long id);
 }
+
