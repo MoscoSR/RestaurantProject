@@ -1,8 +1,10 @@
 package com.restaurant.Restaurant.models.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
+@Builder
 public class ClientDTO {
     public Long id;
     public String document;
