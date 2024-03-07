@@ -4,6 +4,7 @@ import com.restaurant.Restaurant.models.dto.ProductDTO;
 import com.restaurant.Restaurant.service.products.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,23 +16,13 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping(path = "/{uuid}")
-    public ResponseEntity<?> getProductById (@PathVariable String uuid){
-        try {
-            ProductDTO productDTO=productService.getProductByUuid(uuid);
-            if (productDTO!=null){
-                return ResponseEntity.ok(productDTO);
-            }else{
-                return ResponseEntity.status(404).body("Producto no encontrado");
-            }
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(400).body("Formato de UUID invalido");
-        }
-
+    public ResponseEntity<?> getProductById (@PathVariable String uuid) {
+        return ResponseEntity.ok(productService.getProductByUuid(uuid));
     }
     @PostMapping
     public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO){
             ProductDTO product=productService.createProduct(productDTO);
-            return ResponseEntity.status(201).body(product);
+            return ResponseEntity.status(HttpStatus.CREATED).body(product);
     }
     @PutMapping(path = "/{uuid}")
     public ResponseEntity<?> updateProduct(@PathVariable String uuid, @Valid @RequestBody ProductDTO productDTO){

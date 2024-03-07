@@ -40,8 +40,8 @@ public class ProductEntity {
     private String description;
 
     @Column(name = "price", nullable = false)
-    private double price;
+    private Double price;
 
     @Column(name = "available", nullable = false)
-    private boolean available;
+    private Boolean available;
 }
