@@ -1,9 +1,12 @@
 package com.restaurant.Restaurant.service.products;
 
 import com.restaurant.Restaurant.entity.ProductEntity;
+import com.restaurant.Restaurant.exception.impl.FantasyNameExistsException;
+import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.mapper.ProductMapper;
 import com.restaurant.Restaurant.models.dto.ProductDTO;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
+import com.restaurant.Restaurant.validator.ProductValidator;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,23 +20,27 @@ public class ProductService {
     private final IProductRepositoryJPA productRepository;
     @Autowired
     ProductMapper mapper;
-
-
+    @Autowired
+    ProductValidator validator;
     public ProductService(IProductRepositoryJPA productRepository) {
         this.productRepository = productRepository;
     }
 
     public ProductDTO getProductByUuid(String uuid) {
+        validator.validateUuid(uuid);
+        if (productRepository.findByUuid(uuid)==null){
+            throw new ProductNotFoundException("Producto no encontrado");
+        }
         return  mapper.EntityToDTO(productRepository.findByUuid(uuid));
     }
     public ProductDTO createProduct(ProductDTO product){
-
+        validator.validateProductDto(product);
         ProductEntity productEntity= mapper.DTOToEntity(product);
         if (productRepository.existsByfantasyName(productEntity.getFantasyName())){
-            throw new IllegalArgumentException("Producto con nombre fantasia ya existe");
-        }else {
-            return mapper.EntityToDTO(productRepository.save(productEntity));
+            throw new FantasyNameExistsException("Producto con nombre fantasia ya existe");
         }
+        return mapper.EntityToDTO(productRepository.save(productEntity));
+
     }
     public void updateProduct(ProductDTO product) throws EntityNotFoundException {
         ProductEntity productExist= productRepository.findByUuid(product.getUuid());
@@ -43,7 +50,7 @@ public class ProductService {
             productExist.setFantasyName(product.getFantasyName().toUpperCase());
             productExist.setCategory(product.getCategory());
             productExist.setPrice(product.getPrice());
-            productExist.setAvailable(product.isAvailable());
+            productExist.setAvailable(product.getAvailable());
             productRepository.save(productExist);
         }
     }

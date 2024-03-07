@@ -17,7 +17,7 @@ public class ProductMapper  {
                 .description(productEntity.getDescription())
                 .category(productEntity.getCategory())
                 .price(productEntity.getPrice())
-                .available(productEntity.isAvailable())
+                .available(productEntity.getAvailable())
                 .build();
     }
     public ProductEntity DTOToEntity(ProductDTO productDTO){
@@ -28,7 +28,7 @@ public class ProductMapper  {
                 .description(productDTO.getDescription())
                 .category(productDTO.getCategory())
                 .price(productDTO.getPrice())
-                .available(productDTO.isAvailable())
+                .available(productDTO.getAvailable())
                 .build();
     }
 

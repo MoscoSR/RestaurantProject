@@ -13,6 +13,6 @@ public class ProductDTO {
     private String fantasyName;
     private ProductEntity.Category category;
     private String description;
-    private double price;
-    private boolean available;
+    private Double price;
+    private Boolean available;
 }
