@@ -1,16 +1,22 @@
 package com.restaurant.Restaurant.service.orders;
 
+import com.restaurant.Restaurant.models.dto.OrderDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OrderServiceImpl implements IOrderService{
+
+    @Autowired
+    private IOrderService orderRepository;
+
     @Override
-    public String createOrder() {
-        return "Your order is on the way!";
+    public OrderDTO createOrder(OrderDTO orderDTO) {
+        return null;
     }
 
     @Override
-    public String updateOrderDelivered() {
-        return "Order delivered!";
+    public OrderDTO updateOrderDelivered(String uuid, OrderDTO orderDTO) {
+        return null;
     }
 }
