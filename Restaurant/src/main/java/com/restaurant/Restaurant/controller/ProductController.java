@@ -25,21 +25,24 @@ public class ProductController {
             }
         }catch (IllegalArgumentException e){
             return ResponseEntity.status(400).body("Formato de UUID invalido");
-        }catch (Exception e){
-            return ResponseEntity.status(500).body("Error general del servidor: "+e.getMessage());
         }
 
     }
     @PostMapping
-    public ResponseEntity<?> createProduct(@Valid @RequestBody ProductDTO productDTO){
-        try{
+    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO){
             ProductDTO product=productService.createProduct(productDTO);
             return ResponseEntity.status(201).body(product);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(409).body(e);
-        }catch (Exception e){
-            return ResponseEntity.status(500).body("Error general del servidor");
-        }
+    }
+    @PutMapping(path = "/{uuid}")
+    public ResponseEntity<?> updateProduct(@PathVariable String uuid, @Valid @RequestBody ProductDTO productDTO){
+        productDTO.setUuid(uuid);
+        productService.updateProduct(productDTO);
+        return ResponseEntity.status(204).body("");
+    }
+    @DeleteMapping(path = "/{uuid}")
+    public ResponseEntity<?> deleteProduct(@PathVariable String uuid){
+        productService.deleteProduct(uuid);
+        return ResponseEntity.status(204).body("");
     }
 
 

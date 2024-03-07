@@ -35,13 +35,25 @@ public class ProductService {
             return mapper.EntityToDTO(productRepository.save(productEntity));
         }
     }
-
-    public ProductDTO updateProduct(ProductEntity product) throws EntityNotFoundException {
-        ProductEntity existingClient = productRepository.findById(product.getId()).orElseThrow(() -> new EntityNotFoundException("Product with ID " + product.getId() + " not found"));
-        ProductMapper mapper= new ProductMapper();
-        return mapper.EntityToDTO( productRepository.save(existingClient));
+    public void updateProduct(ProductDTO product) throws EntityNotFoundException {
+        ProductEntity productExist= productRepository.findByUuid(product.getUuid());
+        if (productExist==null){
+          throw  new EntityNotFoundException("Product with ID " + product.getUuid() + " not found");
+        }else {
+            productExist.setFantasyName(product.getFantasyName().toUpperCase());
+            productExist.setCategory(product.getCategory());
+            productExist.setPrice(product.getPrice());
+            productExist.setAvailable(product.isAvailable());
+            productRepository.save(productExist);
+        }
     }
-//    public void deleteProduct(Long id){
-//        productRepository.deleteById(id);
-//    }
+
+    public void deleteProduct(String uuid)throws EntityNotFoundException{
+        ProductEntity productExist= productRepository.findByUuid(uuid);
+        if (productExist==null){
+            throw  new EntityNotFoundException("Product with ID " + uuid + " not found");
+        }else {
+            productRepository.delete(productExist);
+        }
+    }
 }

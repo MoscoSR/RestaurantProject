@@ -11,4 +11,5 @@ public interface IProductRepositoryJPA extends JpaRepository<ProductEntity,Long>
 
     ProductEntity findByUuid(String uuid);
     Boolean existsByfantasyName(String fantasyName);
+
 }
