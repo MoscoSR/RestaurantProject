@@ -1,8 +1,12 @@
 package com.restaurant.Restaurant.service.orders;
 
+import com.restaurant.Restaurant.models.dto.OrderDTO;
+
+import java.time.LocalDateTime;
+
 public interface IOrderService {
 
-    public String createOrder();
+    public OrderDTO createOrder(OrderDTO dto);
 
-    public String updateOrderDelivered();
+    public OrderDTO updateOrderDelivered(OrderDTO dto, LocalDateTime time);
 }
