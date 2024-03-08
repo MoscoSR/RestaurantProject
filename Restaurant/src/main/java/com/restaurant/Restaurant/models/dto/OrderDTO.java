@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Data
 @Builder // Lombok annotation to create a builder for the class, avoiding the creation of the constructor
 public class OrderDTO {
-    private Long id;
     private String uuid;
     private LocalDateTime creationDateTime;
     private String clientDocument;

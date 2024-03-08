@@ -10,7 +10,6 @@ public class OrderEntityToDtoMapper implements Converter<OrderEntity, OrderDTO>{
     @Override
     public OrderDTO convert(OrderEntity orderEntity) {
         return OrderDTO.builder()
-                .id(orderEntity.getId())
                 .uuid(orderEntity.getUuid())
                 .creationDateTime(orderEntity.getCreationDateTime())
                 .clientDocument(orderEntity.getClientDocument())
