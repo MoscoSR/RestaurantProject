@@ -1,9 +1,11 @@
 package com.restaurant.Restaurant.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "orders")
 @Builder
@@ -21,7 +23,7 @@ public class OrderEntity {
     private String uuid;
 
     @Column(nullable = false)
-    private LocalDate creationDateTime;
+    private LocalDateTime creationDateTime;
 
     @Column (nullable = false)
     private String clientDocument;
@@ -32,21 +34,21 @@ public class OrderEntity {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(length = 511)
+    @Column(length = 511, nullable = false)
     private String extraInformation;
 
-    @Column
+    @Column(nullable = false)
     private Double subTotal;
 
-    @Column
+    @Column(nullable = false)
     private Double tax;
 
-    @Column
+    @Column(nullable = false)
     private Double grandTotal;
 
     @Column
-    private Boolean delivered;
+    private Boolean delivered = false;
 
     @Column
-    private LocalDate deliveredDateTime;
+    private LocalDateTime deliveredDateTime;
 }
