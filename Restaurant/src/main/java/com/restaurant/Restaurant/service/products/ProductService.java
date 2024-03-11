@@ -1,6 +1,7 @@
 package com.restaurant.Restaurant.service.products;
 
 import com.restaurant.Restaurant.entity.ProductEntity;
+import com.restaurant.Restaurant.exception.impl.DataAlreadyExistsException;
 import com.restaurant.Restaurant.exception.impl.FantasyNameExistsException;
 import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.mapper.ProductMapper;
@@ -42,25 +43,34 @@ public class ProductService {
         return mapper.EntityToDTO(productRepository.save(productEntity));
 
     }
-    public void updateProduct(ProductDTO product) throws EntityNotFoundException {
+    public void updateProduct(ProductDTO product) {
+        validator.validateUuid(product.getUuid());
         ProductEntity productExist= productRepository.findByUuid(product.getUuid());
         if (productExist==null){
-          throw  new EntityNotFoundException("Product with ID " + product.getUuid() + " not found");
-        }else {
-            productExist.setFantasyName(product.getFantasyName().toUpperCase());
-            productExist.setCategory(product.getCategory());
-            productExist.setPrice(product.getPrice());
-            productExist.setAvailable(product.getAvailable());
-            productRepository.save(productExist);
+          throw  new ProductNotFoundException("Product con uuid " + product.getUuid() + " no existe");
         }
+        validator.validateProductDto(product);
+        validator.productCompare(product,mapper.EntityToDTO(productExist));
+        if (productRepository.existsByfantasyName(product.getFantasyName()) && !productExist.getFantasyName().equalsIgnoreCase(product.getFantasyName())){
+            throw new FantasyNameExistsException("Producto con nombre fantasia ya existe");
+        }
+        productExist.setFantasyName(product.getFantasyName().toUpperCase());
+        productExist.setCategory(product.getCategory());
+        productExist.setPrice(product.getPrice());
+        productExist.setDescription(product.getDescription());
+        productExist.setAvailable(product.getAvailable());
+        productRepository.save(productExist);
+
     }
 
-    public void deleteProduct(String uuid)throws EntityNotFoundException{
+    public void deleteProduct(String uuid){
+        validator.validateUuid(uuid);
         ProductEntity productExist= productRepository.findByUuid(uuid);
         if (productExist==null){
-            throw  new EntityNotFoundException("Product with ID " + uuid + " not found");
-        }else {
-            productRepository.delete(productExist);
+            throw  new ProductNotFoundException("Product with Uuid " + uuid + " not found");
         }
+        validator.validateUuid(uuid);
+        productRepository.delete(productExist);
+
     }
 }
