@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/clients")
 public class ClientController {
 
-    private  ClientService clientService;
+    private ClientService clientService;
 
-    public ClientController( ClientService clientService){
+    public ClientController(ClientService clientService) {
         this.clientService = clientService;
     }
 
@@ -31,8 +31,9 @@ public class ClientController {
                     .body(clientErrorDTO.getMessage());
         }
     }
+
     @GetMapping("/")
-    public ResponseEntity<?>getClients(){
+    public ResponseEntity<?> getClients() {
         try {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -46,11 +47,12 @@ public class ClientController {
         }
     }
 
-    public ResponseEntity<?>getClient(Long id){
+    @GetMapping("/{document}")
+    public ResponseEntity<?>getClient( @PathVariable String document){
         try {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(this.clientService.getClient(id));
+                    .body(this.clientService.getClient(document));
         } catch (Exception e) {
             ClientErrorDTO clientErrorDTO = new ClientErrorDTO();
             clientErrorDTO.setMessage(e.getMessage());
@@ -60,12 +62,12 @@ public class ClientController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?>UpdateClient(@PathVariable Long id, @RequestBody ClientDTO clientDTO) {
+    @PutMapping("/{document}")
+    public ResponseEntity<?>UpdateClient(@PathVariable String document, @RequestBody ClientDTO clientDTO) {
         try {
             return ResponseEntity
                     .status(HttpStatus.ACCEPTED)
-                    .body(this.clientService.updateClient(id, clientDTO));
+                    .body(this.clientService.updateClient(document, clientDTO));
         } catch (Exception e) {
             ClientErrorDTO clientErrorDTO = new ClientErrorDTO();
             clientErrorDTO.setMessage(e.getMessage());
@@ -74,8 +76,8 @@ public class ClientController {
                     .body(clientErrorDTO.getMessage());
         }
     }
-    @DeleteMapping("/{id}")
-    public void deleteClient(@PathVariable Long id){
-        clientService.deleteClient(id);
+    @DeleteMapping("/{document}")
+    public void deleteClient(@PathVariable String document){
+        clientService.deleteClient(document);
     }
 }
