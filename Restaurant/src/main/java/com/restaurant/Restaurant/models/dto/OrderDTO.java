@@ -12,28 +12,15 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class OrderDTO {
-
-    private int id;
-
     private String uuid;
-
     private LocalDateTime creationDateTime;
-
     private String clientDocument;
-
     private String productUuid;
-
-    private int quantity;
-
+    private Integer quantity;
     private String extraInformation;
-
-    private double subTotal;
-
-    private double tax;
-
-    private double grandTotal;
-
-    private boolean delivered;
-
+    private Double subTotal;
+    private Double tax;
+    private Double grandTotal;
+    private Boolean delivered;
     private LocalDateTime deliveredDate;
 }

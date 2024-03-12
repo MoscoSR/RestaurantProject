@@ -14,41 +14,78 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class OrderEntity {
 
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "id", nullable = false)
+//    private int id;
+//
+//    @Column(name = "uuid", nullable = false)
+//    private String uuid;
+//
+//    @Column(name = "creation_date_time", nullable = false)
+//    private LocalDateTime creationDateTime;
+//
+//    @Column(name = "client_document", nullable = false)
+//    private String clientDocument;
+//
+//    @Column(name = "product_uuid", nullable = false)
+//    private String productUuid;
+//
+//    @Column(name = "quantity", nullable = false)
+//    private int quantity;
+//
+//    @Column(name = "extra_information", nullable = false)
+//    private String extraInformation;
+//
+//    @Column(name = "sub_total", nullable = false)
+//    private double subTotal;
+//
+//    @Column(name = "tax", nullable = false)
+//    private double tax;
+//
+//    @Column(name = "grand_total", nullable = false)
+//    private double grandTotal;
+//
+//    @Column(name = "delivered", nullable = false)
+//    private boolean delivered;
+//
+//    @Column(name = "delivered_date" )
+//    private LocalDateTime deliveredDate;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private int id;
+    private Long id;
 
-    @Column(name = "uuid", nullable = false)
+    @Column(nullable = false)
     private String uuid;
 
-    @Column(name = "creation_date_time", nullable = false)
+    @Column(nullable = false)
     private LocalDateTime creationDateTime;
 
-    @Column(name = "client_document", nullable = false)
+    @Column (nullable = false)
     private String clientDocument;
 
-    @Column(name = "product_uuid", nullable = false)
+    @Column(nullable = false)
     private String productUuid;
 
-    @Column(name = "quantity", nullable = false)
-    private int quantity;
+    @Column(nullable = false)
+    private Integer quantity;
 
-    @Column(name = "extra_information", nullable = false)
+    @Column(length = 511, nullable = false)
     private String extraInformation;
 
-    @Column(name = "sub_total", nullable = false)
-    private double subTotal;
+    @Column(nullable = false)
+    private Double subTotal;
 
-    @Column(name = "tax", nullable = false)
-    private double tax;
+    @Column(nullable = false)
+    private Double tax;
 
-    @Column(name = "grand_total", nullable = false)
-    private double grandTotal;
+    @Column(nullable = false)
+    private Double grandTotal;
 
-    @Column(name = "delivered", nullable = false)
-    private boolean delivered;
+    @Column
+    private Boolean delivered = false;
 
-    @Column(name = "delivered_date" )
+    @Column
     private LocalDateTime deliveredDate;
 }

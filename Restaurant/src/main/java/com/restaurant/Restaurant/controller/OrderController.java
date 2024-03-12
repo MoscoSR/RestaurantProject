@@ -1,11 +1,13 @@
 package com.restaurant.Restaurant.controller;
 
-import com.restaurant.Restaurant.models.dto.ClientDTO;
 import com.restaurant.Restaurant.models.dto.OrderDTO;
 import com.restaurant.Restaurant.service.orders.OrderServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @RestController
@@ -14,13 +16,13 @@ public class OrderController {
 
     @Autowired
     OrderServiceImpl service;
-    @PostMapping
-    public OrderDTO createOrder(@RequestBody OrderDTO orderDTO){
-        return service.createOrder(orderDTO);
+    @PostMapping("/newOrders")
+    public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO){
+        return new ResponseEntity<>(service.createOrder(orderDTO) , HttpStatus.CREATED);
     }
 
     @PatchMapping(path = "/{uuid}/delivered/{timestamp}")
-    public OrderDTO updateOrderDelivered(OrderDTO dto, LocalDateTime time){
-        return service.updateOrderDelivered( dto, time);
+    public ResponseEntity<?> updateOrderDelivered(@PathVariable String uuid, @PathVariable LocalDateTime timestamp, OrderDTO orderDTO){
+        return new ResponseEntity<>(service.updateOrderDelivered(uuid, timestamp, orderDTO), HttpStatus.OK);
     }
 }
