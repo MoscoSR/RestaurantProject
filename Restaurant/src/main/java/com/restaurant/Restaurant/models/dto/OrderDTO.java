@@ -21,4 +21,5 @@ public class OrderDTO {
     private Double grandTotal;
     private Boolean delivered;
     private LocalDateTime deliveredDateTime;
+    private LocalDateTime deliveredDate;
 }

@@ -5,13 +5,15 @@ import com.restaurant.Restaurant.models.dto.OrderDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.core.convert.converter.Converter;
 
+import java.time.LocalDateTime;
+
 @Component
 public class OrderEntityToDtoMapper implements Converter<OrderEntity, OrderDTO>{
     @Override
     public OrderDTO convert(OrderEntity orderEntity) {
         return OrderDTO.builder()
                 .uuid(orderEntity.getUuid())
-                .creationDateTime(orderEntity.getCreationDateTime())
+                .creationDateTime(LocalDateTime.now())
                 .clientDocument(orderEntity.getClientDocument())
                 .productUuid(orderEntity.getProductUuid())
                 .quantity(orderEntity.getQuantity())
