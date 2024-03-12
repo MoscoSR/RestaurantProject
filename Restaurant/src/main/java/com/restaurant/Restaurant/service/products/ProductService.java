@@ -20,11 +20,13 @@ public class ProductService {
     @Autowired
     private final IProductRepositoryJPA productRepository;
     @Autowired
-    ProductMapper mapper;
+    private final ProductMapper mapper;
     @Autowired
-    ProductValidator validator;
-    public ProductService(IProductRepositoryJPA productRepository) {
+    private final ProductValidator validator;
+    public ProductService(IProductRepositoryJPA productRepository, ProductMapper mapper, ProductValidator validator) {
         this.productRepository = productRepository;
+        this.mapper = mapper;
+        this.validator = validator;
     }
 
     public ProductDTO getProductByUuid(String uuid) {
