@@ -71,7 +71,6 @@ public class ProductService {
         if (productExist==null){
             throw  new ProductNotFoundException("Product with Uuid " + uuid + " not found");
         }
-        validator.validateUuid(uuid);
         productRepository.delete(productExist);
 
     }

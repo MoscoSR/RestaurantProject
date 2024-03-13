@@ -1,6 +1,7 @@
 package com.restaurant.Restaurant.service.products;
 
 import com.restaurant.Restaurant.entity.ProductEntity;
+import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.mapper.ProductMapper;
 import com.restaurant.Restaurant.models.dto.ProductDTO;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -35,6 +37,7 @@ class ProductServiceTest {
     @Mock
     private  ProductValidator validator;
 
+    //Objects used in test cases
     @BeforeEach
     public void setUp(){
         productEntity = productEntity.builder()
@@ -52,6 +55,22 @@ class ProductServiceTest {
                 .available(true)
                 .build();
     }
+
+    @Test
+    void shouldShowProductByUuid(){
+        productEntity.setUuid("efc3aa56-f8eb-46b5-96d7-7fb3eb4ae78f");
+        Mockito.doNothing().when(validator).validateUuid(productEntity.getUuid());
+        Mockito.when(productRepository.findByUuid(productEntity.getUuid())).thenReturn(productEntity);
+        Mockito.when(mapper.EntityToDTO(productEntity)).thenReturn(productDTO);
+        var response= productService.getProductByUuid(productEntity.getUuid());
+        //Verify times the methods
+        verify(validator, times(1)).validateUuid(productEntity.getUuid());
+        verify(productRepository,times(2)).findByUuid(productEntity.getUuid());
+        //assertEquals("Hamburger With Chess",response.getFantasyName());
+        assertEquals(productDTO,response);
+    }
+
+
     @Test
     void shouldSaveProductSuccessfully(){
         Mockito.doNothing().when(validator).validateProductDto(productDTO);
@@ -67,17 +86,45 @@ class ProductServiceTest {
         Mockito.verify(productRepository, times(1)).save(productEntity);
         Mockito.verify(mapper, times(1)).EntityToDTO(productEntity);
 
-        assertEquals("Hamburger With Chess", response.getFantasyName());
+        //assertEquals("Hamburger With Chess", response.getFantasyName());
+        assertEquals(productDTO,response);
     }
+
+
+
     @Test
-    void shouldShowProductByUuid(){
-        Mockito.doNothing().when(validator).validateUuid(productEntity.getUuid());
-        Mockito.when(productRepository.findByUuid(productEntity.getUuid())).thenReturn(productEntity);
-        var response= productService.getProductByUuid(productEntity.getUuid());
+    void shouldUpdateProduct(){
+        Mockito.doNothing().when(validator).validateUuid(productDTO.getUuid());
+        Mockito.doNothing().when(validator).validateProductDto(productDTO);
+        Mockito.when(mapper.EntityToDTO(productEntity)).thenReturn(productDTO);
+        Mockito.doNothing().when(validator).productCompare(productDTO,productDTO);
+
+        Mockito.when(productRepository.findByUuid( productDTO.getUuid())).thenReturn(productEntity);
+        Mockito.when(productRepository.existsByfantasyName(productEntity.getFantasyName())).thenReturn(Boolean.FALSE);
+        productService.updateProduct(productDTO);
+
         //Verify times the methods
-        verify(validator, times(1)).validateUuid(productEntity.getUuid());
-        verify(productRepository,times(1)).findByUuid(productEntity.getUuid());
-        assertEquals("Hamburger With Chess",response.getFantasyName());
+        verify(validator, times(1)).validateUuid(productDTO.getUuid());
+        verify(validator, times(1)).validateProductDto(productDTO);
+        verify(mapper, times(1)).EntityToDTO(productEntity);
+        verify(validator, times(1)).productCompare(productDTO,productDTO);
+        verify(productRepository, times(1)).findByUuid(productDTO.getUuid());
+        verify(productRepository, times(1)).existsByfantasyName(productDTO.getFantasyName());
+
+
+        assertEquals("HAMBURGER WITH CHESS", productEntity.getFantasyName());
+    }
+
+    @Test
+    void shouldDeleteProductByUuid(){
+        Mockito.doNothing().when(validator).validateUuid(productDTO.getUuid());
+        Mockito.when(productRepository.findByUuid( productDTO.getUuid())).thenReturn(productEntity);
+        productService.deleteProduct(productDTO.getUuid());
+
+        //Verify times the methods
+        verify(validator, times(1)).validateUuid(productDTO.getUuid());
+        verify(productRepository, times(1)).findByUuid(productDTO.getUuid());
+
     }
 
 }
