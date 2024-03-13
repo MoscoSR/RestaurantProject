@@ -1,8 +1,11 @@
 package com.restaurant.Restaurant.validator;
 
+import com.restaurant.Restaurant.exception.impl.DataAlreadyExistsException;
 import com.restaurant.Restaurant.exception.impl.InvalidOrIncompleteDataException;
 import com.restaurant.Restaurant.models.dto.ProductDTO;
 import org.springframework.stereotype.Component;
+
+import java.util.regex.Pattern;
 
 @Component
 public class ProductValidator {
@@ -26,8 +29,21 @@ public class ProductValidator {
         }
     }
     public void validateUuid(String uuid){
-        if (uuid==null || uuid.isEmpty()){
-            throw new InvalidOrIncompleteDataException("Uuid not is valid");
+        Pattern UuidPattern= Pattern.compile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
+        if (!UuidPattern.matcher(uuid).matches()){
+            throw new InvalidOrIncompleteDataException("Uuid no es valido");
         }
+    }
+    public void productCompare(ProductDTO productDTO, ProductDTO productExist){
+        if (productDTO.getFantasyName().equalsIgnoreCase(productExist.getFantasyName())
+            && productDTO.getCategory().equals(productExist.getCategory())
+                && productDTO.getDescription().equalsIgnoreCase(productExist.getDescription())
+                    && productDTO.getPrice().equals(productExist.getPrice())
+                        && productDTO.getAvailable().equals(productExist.getAvailable())){
+            throw new DataAlreadyExistsException("No hay ningun campo diferente para actualizar");
+        }
+    }
+    public boolean productExistFantasyName(String productExist,String productDto){
+        return !productExist.equalsIgnoreCase(productDto);
     }
 }
