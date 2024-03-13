@@ -16,7 +16,7 @@ public class ProductController {
     ProductService productService;
 
     @GetMapping(path = "/{uuid}")
-    public ResponseEntity<?> getProductById (@PathVariable String uuid) {
+    public ResponseEntity<?> getProductByUuid (@PathVariable String uuid) {
         return ResponseEntity.ok(productService.getProductByUuid(uuid));
     }
     @PostMapping
