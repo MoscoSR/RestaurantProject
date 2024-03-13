@@ -4,6 +4,7 @@ import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.entity.OrderEntity;
 import com.restaurant.Restaurant.entity.ProductEntity;
 import com.restaurant.Restaurant.exception.impl.InvalidOrIncompleteDataException;
+import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.mapper.OrderEntityToDtoMapper;
 import com.restaurant.Restaurant.models.dto.OrderDTO;
 import com.restaurant.Restaurant.repository.ClientRepository;
@@ -57,8 +58,6 @@ class OrderServiceImplTest {
     @BeforeEach
     public void setUp(){
 
-        MockitoAnnotations.openMocks(this);
-
          orderDTO = OrderDTO.builder()
                 .clientDocument("CC-12345")
                 .productUuid("256309c6-5b24-499e-9ccb-6e69b781690a")
@@ -105,19 +104,17 @@ class OrderServiceImplTest {
         Mockito.when(productRepository.findByUuid(Mockito.anyString())).thenReturn(product);
         Mockito.when(clientRepository.findByDocument(Mockito.anyString())).thenReturn(client);
 
-        // Assert initial values
         Assertions.assertNotNull(orderDTO.getQuantity());
         Assertions.assertNotNull(product);
         Assertions.assertNotNull(client);
 
-        // Mock validators
         Mockito.doNothing().when(validator).verifyFields(any());
         Mockito.doNothing().when(validator).verifyProductUuidExists(any());
         Mockito.doNothing().when(validator).verifyClientExists(any());
 
         // Create expected result
         OrderDTO orderDTOResult = OrderDTO.builder()
-                .uuid(UUID.randomUUID().toString())  // Simulate a generated UUID
+                .uuid(UUID.randomUUID().toString())
                 .creationDateTime(orderEntity.getCreationDateTime())
                 .clientDocument("CC-12345")
                 .productUuid("256309c6-5b24-499e-9ccb-6e69b781690a")
@@ -136,8 +133,8 @@ class OrderServiceImplTest {
         var result = orderService.createOrder(orderDTO);
 
         assertNotNull(result);
-//        assertEquals(orderDTOResult.getUuid(), result.getUuid());
-//        assertEquals(orderDTOResult.getCreationDateTime(), result.getCreationDateTime());
+        assertEquals(orderDTOResult.getUuid(), result.getUuid());
+        assertEquals(orderDTOResult.getCreationDateTime(), result.getCreationDateTime());
     }
 
     @Test
@@ -149,14 +146,13 @@ class OrderServiceImplTest {
                 .extraInformation("Hamburguer with french fries")
                 .build();
 
-        // Mock el comportamiento del validador
         Mockito.doThrow(InvalidOrIncompleteDataException.class).when(validator).verifyFields(orderDTO);
 
-        // Utiliza assertThrows para verificar que se lanza la excepción esperada
         assertThrows(InvalidOrIncompleteDataException.class, () -> {
             orderService.createOrder(orderDTO);
         });
 
     }
+
 
 }

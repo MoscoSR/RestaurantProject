@@ -69,15 +69,6 @@ public class OrderServiceImpl implements IOrderService{
         orderEntity.setTax(tax);
         orderEntity.setGrandTotal(grandTotal);
 
-        System.out.println(orderEntity);
-
-        OrderDTO mapperPrueba = mapper.convert(orderEntity);
-        System.out.println(mapperPrueba);
-
-        OrderEntity orderPrueba = orderRepository.save(orderEntity);
-        System.out.println(orderPrueba);
-
-        System.out.println(mapper.convert(orderRepository.save(orderEntity)));
         return mapper.convert(orderRepository.save(orderEntity));
     }
 
