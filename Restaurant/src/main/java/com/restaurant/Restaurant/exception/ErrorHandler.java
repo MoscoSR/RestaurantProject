@@ -96,4 +96,15 @@ public class ErrorHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<CustomErrorResponse> orderNotFoundException (OrderNotFoundException orderNotFoundException) {
+        CustomErrorResponse errorResponse = CustomErrorResponse.builder()
+                .code(ExceptionCode.ORDER_NOT_FOUND)
+                .description(orderNotFoundException.getMessage())
+                .timeStamp(LocalDateTime.now())
+                .exception(orderNotFoundException.getStackTrace().toString())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 }

@@ -11,5 +11,6 @@ public interface ExceptionCode {
     String FANTASY_NAME_ALREADY_EXISTS = "E1005";
     String PRODUCT_NOT_FOUND = "E1006";
     String INTERNAL_SERVER_ERROR = "E1007";
+    String ORDER_NOT_FOUND = "E1008";
 
 }

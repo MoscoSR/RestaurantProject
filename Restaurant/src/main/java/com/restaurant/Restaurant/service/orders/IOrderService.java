@@ -9,6 +9,6 @@ import java.time.LocalDateTime;
 public interface IOrderService {
     OrderDTO createOrder(OrderDTO orderDTO);
 
-    OrderDTO updateOrderDelivered(Long uuid, LocalDateTime timeStamp, OrderDTO orderDTO);
+    OrderDTO updateOrderDeliveredByUuid(String uuid, LocalDateTime timeStamp, OrderDTO orderDTO);
 
 }

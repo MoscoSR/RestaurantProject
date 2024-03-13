@@ -3,14 +3,12 @@ package com.restaurant.Restaurant.service.orders;
 import com.restaurant.Restaurant.entity.OrderEntity;
 import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.entity.ProductEntity;
-import com.restaurant.Restaurant.exception.impl.ClientNotFoundException;
-import com.restaurant.Restaurant.exception.impl.InvalidOrIncompleteDataException;
-import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.mapper.OrderEntityToDtoMapper;
 import com.restaurant.Restaurant.models.dto.OrderDTO;
 import com.restaurant.Restaurant.repository.ClientRepository;
 import com.restaurant.Restaurant.repository.IOrderRepository;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
+import com.restaurant.Restaurant.validator.OrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +18,28 @@ import java.util.UUID;
 @Service
 public class OrderServiceImpl implements IOrderService{
 
-    @Autowired
-    private IOrderRepository orderRepository;
+
+    private final IOrderRepository orderRepository;
+
+
+    private final OrderEntityToDtoMapper mapper;
+
+
+    private final IProductRepositoryJPA productRepository;
+
+    private final OrderValidator orderValidator;
+
+
+    private final ClientRepository clientRepository;
 
     @Autowired
-    private OrderEntityToDtoMapper mapper;
-
-    @Autowired
-    IProductRepositoryJPA productRepository;
-
-    @Autowired
-    ClientRepository clientRepository;
+    public OrderServiceImpl(IOrderRepository orderRepository, OrderEntityToDtoMapper mapper, IProductRepositoryJPA productRepository, OrderValidator orderValidator, ClientRepository clientRepository) {
+        this.orderRepository = orderRepository;
+        this.mapper = mapper;
+        this.productRepository = productRepository;
+        this.orderValidator = orderValidator;
+        this.clientRepository = clientRepository;
+    }
 
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -38,21 +47,12 @@ public class OrderServiceImpl implements IOrderService{
         ProductEntity product = productRepository.findByUuid(orderDTO.getProductUuid());
         ClientEntity client = clientRepository.findByDocument(orderDTO.getClientDocument());
 
-        if(orderDTO.getClientDocument() == null ||
-                orderDTO.getProductUuid() == null ||
-                orderDTO.getQuantity() == null
-        ){
-            throw new InvalidOrIncompleteDataException("Hacen falta campos por completar para hacer el pedido");
-        }
-        else if(product == null){
-            throw new ProductNotFoundException("El producto con Uuid " + orderDTO.getProductUuid() + " no existe");
-        }
-        else if ( client == null){
-            throw new ClientNotFoundException("El cliente con documento " + orderDTO.getClientDocument() + " no existe");
-        }
+        orderValidator.validateOrderData(orderDTO);
+        orderValidator.validateProduct(product, orderDTO);
+        orderValidator.validateClient(client, orderDTO);
 
         double subTotal =  product.getPrice() * orderDTO.getQuantity();
-        double tax = subTotal * 0.16;
+        double tax = subTotal * 0.19D;
         double grandTotal = subTotal + tax;
 
         OrderEntity orderEntity = new OrderEntity();
@@ -62,9 +62,9 @@ public class OrderServiceImpl implements IOrderService{
         orderEntity.setProductUuid(orderDTO.getProductUuid());
         orderEntity.setQuantity(orderDTO.getQuantity());
         orderEntity.setExtraInformation(orderDTO.getExtraInformation());
-        orderEntity.setSubTotal(orderDTO.getGrandTotal());
-        orderEntity.setTax(orderDTO.getGrandTotal());
-        orderEntity.setGrandTotal(orderDTO.getGrandTotal());
+        orderEntity.setSubTotal(subTotal);
+        orderEntity.setTax(tax);
+        orderEntity.setGrandTotal(grandTotal);
 
         orderRepository.save(orderEntity);
 
@@ -72,8 +72,9 @@ public class OrderServiceImpl implements IOrderService{
     }
 
     @Override
-    public OrderDTO updateOrderDelivered(Long uuid, LocalDateTime timeStamp, OrderDTO orderDTO) {
-        OrderEntity orderEntity = orderRepository.findById(uuid).orElse(null);
+    public OrderDTO updateOrderDeliveredByUuid(String uuid, LocalDateTime timeStamp, OrderDTO orderDTO) {
+        OrderEntity orderEntity = orderRepository.findByUuid(uuid).orElse(null);
+        orderValidator.validateOrder(orderEntity, orderDTO);
         orderEntity.setDelivered(true);
         orderEntity.setDeliveredDateTime(timeStamp);
         orderRepository.save(orderEntity);
