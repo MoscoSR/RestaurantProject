@@ -30,10 +30,10 @@ public class ProductService {
 
     public ProductDTO getProductByUuid(String uuid) {
         validator.validateUuid(uuid);
-        if (productRepository.findByUuid(uuid)==null){
-            throw new ProductNotFoundException("Producto no encontrado");
-        }
-        return  mapper.EntityToDTO(productRepository.findByUuid(uuid));
+        ProductEntity productResponse= productRepository.findByUuid(uuid);
+        if (productResponse!=null) return  mapper.EntityToDTO(productResponse);
+        throw new ProductNotFoundException("Producto no encontrado");
+
     }
     public ProductDTO createProduct(ProductDTO product){
         validator.validateProductDto(product);
@@ -47,14 +47,10 @@ public class ProductService {
     public void updateProduct(ProductDTO product) {
         validator.validateUuid(product.getUuid());
         ProductEntity productExist= productRepository.findByUuid(product.getUuid());
-        if (productExist==null){
-          throw  new ProductNotFoundException("Product con uuid " + product.getUuid() + " no existe");
-        }
-        validator.validateProductDto(product);
+        validator.validateProductExist(product,productExist);
         validator.productCompare(product,mapper.EntityToDTO(productExist));
-        if (productRepository.existsByfantasyName(product.getFantasyName()) && validator.productExistFantasyName(productExist.getFantasyName(),product.getFantasyName())){
-            throw new FantasyNameExistsException("Producto con nombre fantasia ya existe");
-        }
+        boolean exist= productRepository.existsByfantasyName(product.getFantasyName());
+        validator.productExistFantasyName(productExist.getFantasyName(),product.getFantasyName(),exist);
         productExist.setFantasyName(product.getFantasyName().toUpperCase());
         productExist.setCategory(product.getCategory());
         productExist.setPrice(product.getPrice());
