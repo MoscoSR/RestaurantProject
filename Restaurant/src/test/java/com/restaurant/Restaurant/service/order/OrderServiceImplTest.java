@@ -3,7 +3,9 @@ package com.restaurant.Restaurant.service.order;
 import com.restaurant.Restaurant.entity.OrderEntity;
 import com.restaurant.Restaurant.mapper.OrderEntityToDtoMapper;
 import com.restaurant.Restaurant.models.dto.OrderDTO;
+import com.restaurant.Restaurant.repository.ClientRepository;
 import com.restaurant.Restaurant.repository.IOrderRepository;
+import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
 import com.restaurant.Restaurant.service.orders.OrderServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -31,6 +34,12 @@ public class OrderServiceImplTest {
 
     @Mock
     private OrderEntityToDtoMapper mapper;
+
+    @Mock
+    private ClientRepository clientRepository;
+
+    @Mock
+    private IProductRepositoryJPA productRepository;
 
     @BeforeEach
     public void setUp() {
