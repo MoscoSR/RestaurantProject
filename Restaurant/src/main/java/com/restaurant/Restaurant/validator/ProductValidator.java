@@ -43,4 +43,7 @@ public class ProductValidator {
             throw new DataAlreadyExistsException("No hay ningun campo diferente para actualizar");
         }
     }
+    public boolean productExistFantasyName(String productExist,String productDto){
+        return !productExist.equalsIgnoreCase(productDto);
+    }
 }

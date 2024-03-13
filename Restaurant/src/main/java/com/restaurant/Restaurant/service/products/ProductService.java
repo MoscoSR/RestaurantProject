@@ -8,7 +8,6 @@ import com.restaurant.Restaurant.mapper.ProductMapper;
 import com.restaurant.Restaurant.models.dto.ProductDTO;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
 import com.restaurant.Restaurant.validator.ProductValidator;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +52,7 @@ public class ProductService {
         }
         validator.validateProductDto(product);
         validator.productCompare(product,mapper.EntityToDTO(productExist));
-        if (productRepository.existsByfantasyName(product.getFantasyName()) && !productExist.getFantasyName().equalsIgnoreCase(product.getFantasyName())){
+        if (productRepository.existsByfantasyName(product.getFantasyName()) && validator.productExistFantasyName(productExist.getFantasyName(),product.getFantasyName())){
             throw new FantasyNameExistsException("Producto con nombre fantasia ya existe");
         }
         productExist.setFantasyName(product.getFantasyName().toUpperCase());
@@ -71,7 +70,6 @@ public class ProductService {
         if (productExist==null){
             throw  new ProductNotFoundException("Product with Uuid " + uuid + " not found");
         }
-        validator.validateUuid(uuid);
         productRepository.delete(productExist);
 
     }
