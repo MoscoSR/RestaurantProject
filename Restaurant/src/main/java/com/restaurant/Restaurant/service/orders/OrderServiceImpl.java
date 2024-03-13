@@ -11,6 +11,7 @@ import com.restaurant.Restaurant.models.dto.OrderDTO;
 import com.restaurant.Restaurant.repository.ClientRepository;
 import com.restaurant.Restaurant.repository.IOrderRepository;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
+import com.restaurant.Restaurant.validator.OrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,36 +23,36 @@ import java.util.regex.Pattern;
 @Service
 public class OrderServiceImpl implements IOrderService{
 
-    @Autowired
-    private IOrderRepository orderRepository;
+    private final IOrderRepository orderRepository;
 
-    @Autowired
-    private OrderEntityToDtoMapper mapper;
+    private final OrderEntityToDtoMapper mapper;
 
-    @Autowired
     IProductRepositoryJPA productRepository;
 
-    @Autowired
     ClientRepository clientRepository;
+
+    private final OrderValidator validator;
+
+    public OrderServiceImpl (IOrderRepository orderRepository, OrderEntityToDtoMapper mapper,
+                             IProductRepositoryJPA productRepository, ClientRepository clientRepository, OrderValidator validator)
+    {
+        this.orderRepository = orderRepository;
+        this.mapper= mapper;
+        this.productRepository = productRepository;
+        this.clientRepository = clientRepository;
+        this.validator = validator;
+    }
 
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
 
+        validator.verifyFields(orderDTO);
+
         ProductEntity product = productRepository.findByUuid(orderDTO.getProductUuid());
         ClientEntity client = clientRepository.findByDocument(orderDTO.getClientDocument());
 
-        if(orderDTO.getClientDocument() == null ||
-                orderDTO.getProductUuid() == null ||
-                orderDTO.getQuantity() == null
-        ){
-            throw new InvalidOrIncompleteDataException("Hacen falta campos por completar para hacer el pedido");
-        }
-        else if(product == null){
-            throw new ProductNotFoundException("El producto con Uuid " + orderDTO.getProductUuid() + " no existe");
-        }
-        else if ( client == null){
-            throw new ClientNotFoundException("El cliente con documento " + orderDTO.getClientDocument() + " no existe");
-        }
+        validator.verifyProductUuidExists(product);
+        validator.verifyClientExists(client);
 
         double subTotal =  product.getPrice() * orderDTO.getQuantity();
         double tax = subTotal * 0.16;
@@ -74,15 +75,10 @@ public class OrderServiceImpl implements IOrderService{
     @Override
     public OrderDTO updateOrderDelivered(String uuid, LocalDateTime timeStamp, OrderDTO orderDTO) {
 
-        Pattern pattern = Pattern.compile("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$");
-        Matcher uuidValidFormat = pattern.matcher(uuid);
-
         OrderEntity orderEntity = orderRepository.findByUuid(uuid);
-        if (!uuidValidFormat.matches()) {
-            throw new InvalidOrIncompleteDataException("Formato de Uuid no valido");
-        }else if( orderEntity == null){
-            throw new ProductNotFoundException("El producto no existe");
-        }
+
+        validator.uuidValidFormat(uuid);
+        validator.verifyOrderExists(orderEntity);
 
         orderEntity.setDelivered(true);
         orderEntity.setDeliveredDate(timeStamp);

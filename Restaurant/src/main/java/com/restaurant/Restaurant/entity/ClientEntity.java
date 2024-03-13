@@ -1,12 +1,15 @@
 package com.restaurant.Restaurant.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
 @Table(name = "client")
 @Data
+
 public class ClientEntity {
 
     @Id

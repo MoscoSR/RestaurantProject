@@ -8,12 +8,12 @@ import org.springframework.core.convert.converter.Converter;
 import java.time.LocalDateTime;
 
 @Component
-public class OrderEntityToDtoMapper implements Converter<OrderEntity, OrderDTO>{
-    @Override
+public class OrderEntityToDtoMapper {
+
     public OrderDTO convert(OrderEntity orderEntity) {
         return OrderDTO.builder()
                 .uuid(orderEntity.getUuid())
-                .creationDateTime(LocalDateTime.now())
+                .creationDateTime(orderEntity.getCreationDateTime())
                 .clientDocument(orderEntity.getClientDocument())
                 .productUuid(orderEntity.getProductUuid())
                 .quantity(orderEntity.getQuantity())
