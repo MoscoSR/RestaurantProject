@@ -1,12 +1,12 @@
 package com.restaurant.Restaurant.service.products;
 
 import com.restaurant.Restaurant.entity.ProductEntity;
+import com.restaurant.Restaurant.exception.impl.FantasyNameExistsException;
 import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.mapper.ProductMapper;
 import com.restaurant.Restaurant.models.dto.ProductDTO;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
 import com.restaurant.Restaurant.validator.ProductValidator;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,13 +19,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
-
     private ProductDTO productDTO;
     private ProductEntity productEntity;
     @InjectMocks
@@ -40,13 +38,13 @@ class ProductServiceTest {
     //Objects used in test cases
     @BeforeEach
     public void setUp(){
-        productEntity = productEntity.builder()
+        productEntity = ProductEntity.builder()
                 .fantasyName("Hamburger With Chess")
                 .category(ProductEntity.Category.MEATS)
                 .description("Hamburger chess with potatoes")
                 .build();
 
-        productDTO = productDTO.builder()
+        productDTO = ProductDTO.builder()
                 .uuid(UUID.randomUUID().toString())
                 .fantasyName("Hamburger With Chess")
                 .category(ProductEntity.Category.MEATS)
@@ -55,7 +53,7 @@ class ProductServiceTest {
                 .available(true)
                 .build();
     }
-
+    //Happy Path
     @Test
     void shouldShowProductByUuid(){
         productEntity.setUuid("efc3aa56-f8eb-46b5-96d7-7fb3eb4ae78f");
@@ -69,8 +67,6 @@ class ProductServiceTest {
         //assertEquals("Hamburger With Chess",response.getFantasyName());
         assertEquals(productDTO,response);
     }
-
-
     @Test
     void shouldSaveProductSuccessfully(){
         Mockito.doNothing().when(validator).validateProductDto(productDTO);
@@ -89,8 +85,6 @@ class ProductServiceTest {
         //assertEquals("Hamburger With Chess", response.getFantasyName());
         assertEquals(productDTO,response);
     }
-
-
 
     @Test
     void shouldUpdateProduct(){
@@ -114,7 +108,6 @@ class ProductServiceTest {
 
         assertEquals("HAMBURGER WITH CHESS", productEntity.getFantasyName());
     }
-
     @Test
     void shouldDeleteProductByUuid(){
         Mockito.doNothing().when(validator).validateUuid(productDTO.getUuid());
@@ -126,5 +119,31 @@ class ProductServiceTest {
         verify(productRepository, times(1)).findByUuid(productDTO.getUuid());
 
     }
+
+    //test exception handling
+
+    @Test
+    void shouldProductNotFoundException(){
+        Mockito.when(productRepository.findByUuid(productEntity.getUuid())).thenReturn(null);
+        assertThrows(ProductNotFoundException.class,()->productService.getProductByUuid(productEntity.getUuid()));
+        assertThrows(ProductNotFoundException.class,()->productService.deleteProduct(productEntity.getUuid()));
+        assertThrows(ProductNotFoundException.class,()->productService.updateProduct(productDTO));
+
+    }
+    @Test
+    void shouldFantasyNameExistsException(){
+        Mockito.when(productRepository.existsByfantasyName(productEntity.getFantasyName())).thenReturn(Boolean.TRUE);
+        Mockito.when(mapper.DTOToEntity(productDTO)).thenReturn(productEntity);
+        assertThrows(FantasyNameExistsException.class,()->productService.createProduct(productDTO));
+     }
+     @Test
+    void shouldFantasyNameExistsExceptionUpdate(){
+         Mockito.when(productRepository.findByUuid( productDTO.getUuid())).thenReturn(productEntity);
+         Mockito.when(productRepository.existsByfantasyName(productEntity.getFantasyName())).thenReturn(Boolean.TRUE);
+         Mockito.when(validator.productExistFantasyName(productDTO.getFantasyName(),productEntity.getFantasyName())).thenReturn(Boolean.TRUE);
+         assertThrows(FantasyNameExistsException.class,()->productService.updateProduct(productDTO));
+     }
+
+
 
 }
