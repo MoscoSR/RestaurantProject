@@ -1,5 +1,6 @@
 package com.restaurant.Restaurant.service.orders;
 
+import com.restaurant.Restaurant.converter.DoubleTwoDecimals;
 import com.restaurant.Restaurant.entity.OrderEntity;
 import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.entity.ProductEntity;
@@ -35,16 +36,19 @@ public class OrderServiceImpl implements IOrderService{
 
     private final ClientValidator clientValidator;
 
-//    private final ProductValidator productValidator;
+    private final DoubleTwoDecimals doubleTwoDecimals;
 
-    public OrderServiceImpl(IOrderRepository orderRepository, OrderEntityToDtoMapper mapper, IProductRepositoryJPA productRepository, OrderValidator orderValidator, ClientRepository clientRepository, ClientValidator clientValidator/*, ProductValidator productValidator*/) {
+    private final ProductValidator productValidator;
+
+    public OrderServiceImpl(IOrderRepository orderRepository, OrderEntityToDtoMapper mapper, IProductRepositoryJPA productRepository, OrderValidator orderValidator, ClientRepository clientRepository, ClientValidator clientValidator, DoubleTwoDecimals doubleTwoDecimals, ProductValidator productValidator) {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
         this.productRepository = productRepository;
         this.orderValidator = orderValidator;
         this.clientRepository = clientRepository;
         this.clientValidator = clientValidator;
-//        this.productValidator = productValidator;
+        this.doubleTwoDecimals = doubleTwoDecimals;
+        this.productValidator = productValidator;
 
     }
 
@@ -60,7 +64,7 @@ public class OrderServiceImpl implements IOrderService{
         orderValidator.verifyProductExists(product, orderDTO);
         orderValidator.verifyClientExists(client, orderDTO);
         clientValidator.validateDocumentFormat(orderDTO.getClientDocument());
-//        productValidator.validateUuid(orderDTO.getProductUuid());
+        productValidator.validateUuid(orderDTO.getProductUuid());
 
         double subTotal =  product.getPrice() * orderDTO.getQuantity();
         double tax = subTotal * 0.19;
@@ -73,9 +77,9 @@ public class OrderServiceImpl implements IOrderService{
             orderEntity.setProductUuid(orderDTO.getProductUuid());
             orderEntity.setQuantity(orderDTO.getQuantity());
             orderEntity.setExtraInformation(orderDTO.getExtraInformation());
-            orderEntity.setSubTotal(subTotal);
-            orderEntity.setTax(tax);
-            orderEntity.setGrandTotal(grandTotal);
+            orderEntity.setSubTotal(doubleTwoDecimals.convert(subTotal));
+            orderEntity.setTax(doubleTwoDecimals.convert(tax));
+            orderEntity.setGrandTotal(doubleTwoDecimals.convert(grandTotal));
             return mapper.convert(orderRepository.save(orderEntity));
     }
 
