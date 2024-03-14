@@ -82,8 +82,8 @@ public class OrderServiceImpl implements IOrderService{
         OrderEntity orderEntity = new OrderEntity();
             orderEntity.setUuid(UUID.randomUUID().toString());
             orderEntity.setCreationDateTime(dateTimeToISO.convert(LocalDateTime.now()));
-            orderEntity.setClientDocument(orderDTO.getClientDocument());
-            orderEntity.setProductUuid(orderDTO.getProductUuid());
+            orderEntity.setClientDocument(client.getDocument());
+            orderEntity.setProductUuid(product.getUuid());
             orderEntity.setQuantity(orderDTO.getQuantity());
             orderEntity.setExtraInformation(orderDTO.getExtraInformation());
             orderEntity.setSubTotal(doubleTwoDecimals.convert(subTotal));

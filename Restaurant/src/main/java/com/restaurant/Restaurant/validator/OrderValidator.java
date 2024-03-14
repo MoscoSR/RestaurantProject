@@ -8,6 +8,7 @@ import com.restaurant.Restaurant.exception.impl.InvalidOrIncompleteDataException
 import com.restaurant.Restaurant.exception.impl.OrderNotFoundException;
 import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.models.dto.OrderDTO;
+import com.restaurant.Restaurant.repository.IOrderRepository;
 import org.springframework.stereotype.Component;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +31,7 @@ public class OrderValidator {
 
     public void validateOrder(OrderEntity orderEntity, OrderDTO orderDTO) {
         if(orderEntity == null){
-            throw new OrderNotFoundException("The order with uuid " + orderDTO.getUuid() + "does not exist");
+            throw new OrderNotFoundException("The order with uuid " + orderDTO.getUuid() + " does not exist");
         }
     }
 
