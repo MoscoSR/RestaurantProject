@@ -4,7 +4,6 @@ import com.restaurant.Restaurant.entity.OrderEntity;
 import com.restaurant.Restaurant.models.dto.OrderDTO;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 
 @Component
 public class OrderEntityToDtoMapper {
@@ -21,6 +20,7 @@ public class OrderEntityToDtoMapper {
                 .tax(orderEntity.getTax())
                 .grandTotal(orderEntity.getGrandTotal())
                 .delivered(orderEntity.getDelivered())
+                .deliveredDate(orderEntity.getDeliveredDate())
                 .build();
     }
 

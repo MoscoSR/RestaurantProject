@@ -1,13 +1,8 @@
 package com.restaurant.Restaurant.models.dto;
 
-import com.restaurant.Restaurant.entity.ClientEntity;
-import com.restaurant.Restaurant.entity.ProductEntity;
-import jakarta.persistence.Column;
+
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @Builder // Lombok annotation to create a builder for the class, avoiding the creation of the constructor

@@ -31,7 +31,7 @@ public class OrderController {
         }
     }
 
-    @PutMapping(path = "/{uuid}/delivered/{timestamp}")
+    @PatchMapping(path = "/{uuid}/delivered/{timestamp}")
     public ResponseEntity<?> updateOrderDelivered(@PathVariable String uuid, @PathVariable LocalDateTime timestamp, @RequestBody OrderDTO orderDTO){
         try{
             return ResponseEntity
