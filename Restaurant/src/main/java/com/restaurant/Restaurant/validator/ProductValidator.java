@@ -37,7 +37,7 @@ public class ProductValidator {
         }
     }
     public void validateUuid(String uuid){
-        Pattern UuidPattern= Pattern.compile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
+        Pattern UuidPattern= Pattern.compile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
         if (!UuidPattern.matcher(uuid).matches()){
             throw new InvalidOrIncompleteDataException("Uuid no es valido");
         }
