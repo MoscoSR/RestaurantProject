@@ -50,9 +50,9 @@ class OrderControllerTest {
     void shouldReturnResponseOrderDelivered() {
         var uuid = "256309c6-5b24-499e-9ccb-6e69b781690a";
         var timestamp = LocalDateTime.parse("2021-10-10T10:00:00");
-        Mockito.when(service.updateOrderDeliveredByUuid(uuid, timestamp, orderDTO)).thenReturn(orderDTO);
-        var response = orderController.updateOrderDelivered(uuid, timestamp, orderDTO);
-        verify(service, times(1)).updateOrderDeliveredByUuid(uuid, timestamp, orderDTO);
+        Mockito.when(service.updateOrderDeliveredByUuid(uuid, timestamp)).thenReturn(orderDTO);
+        var response = orderController.updateOrderDelivered(uuid, timestamp);
+        verify(service, times(1)).updateOrderDeliveredByUuid(uuid, timestamp);
         assertEquals(ResponseEntity.ok(orderDTO), response);
     }
 }

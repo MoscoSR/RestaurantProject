@@ -10,6 +10,8 @@ import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.models.dto.OrderDTO;
 import com.restaurant.Restaurant.repository.IOrderRepository;
 import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,15 +31,15 @@ public class OrderValidator {
         }
     }
 
-    public void validateOrder(OrderEntity orderEntity, OrderDTO orderDTO) {
+    public void validateOrder(OrderEntity orderEntity) {
         if(orderEntity == null){
-            throw new OrderNotFoundException("The order with uuid " + orderDTO.getUuid() + " does not exist");
+            throw new OrderNotFoundException("The order with uuid does not exist");
         }
     }
 
-    public void verifyProductExists(ProductEntity productEntity, OrderDTO orderDTO) {
+    public void verifyProductExists(ProductEntity productEntity) {
         if(productEntity == null){
-            throw new ProductNotFoundException("The product with uuid" + orderDTO.getProductUuid() + " does not exist");
+            throw new ProductNotFoundException("The product with uuid does not exist");
         }
     }
 

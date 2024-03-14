@@ -144,7 +144,6 @@ class OrderServiceImplTest {
         Mockito.when(clientRepository.findByDocument(anyString())).thenReturn(client);
 
         Mockito.doNothing().when(validator).verifyFields(any());
-        Mockito.doNothing().when(validator).verifyProductExists(any(),any());
         Mockito.doNothing().when(validator).verifyClientExists(any(), any());
 
         Mockito.doReturn(expectedDtoResult).when(mapper).convert(any(OrderEntity.class));
@@ -184,7 +183,7 @@ class OrderServiceImplTest {
         Mockito.when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
 
         var result = orderService.updateOrderDeliveredByUuid
-                (expectedDtoResult.getUuid(), LocalDateTime.parse("2024-03-11T15:05:00"), orderDTO);
+                (expectedDtoResult.getUuid(), LocalDateTime.parse("2024-03-11T15:05:00"));
 
         assertNotNull(result);
         assertEquals(expectedDtoResult, result);

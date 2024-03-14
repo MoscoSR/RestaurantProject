@@ -70,7 +70,7 @@ public class OrderServiceImpl implements IOrderService{
 
         orderValidator.verifyFields(orderDTO);
         orderValidator.uuidValidFormat(orderDTO.getProductUuid());
-        orderValidator.verifyProductExists(product, orderDTO);
+        orderValidator.verifyProductExists(product);
         orderValidator.verifyClientExists(client, orderDTO);
         clientValidator.validateDocumentFormat(orderDTO.getClientDocument());
         productValidator.validateUuid(orderDTO.getProductUuid());
@@ -94,9 +94,9 @@ public class OrderServiceImpl implements IOrderService{
 
 
     @Override
-    public OrderDTO updateOrderDeliveredByUuid(String uuid, LocalDateTime timeStamp, OrderDTO orderDTO) {
+    public OrderDTO updateOrderDeliveredByUuid(String uuid, LocalDateTime timeStamp) {
         OrderEntity orderEntity = orderRepository.findByUuid(uuid).orElse(null);
-        orderValidator.validateOrder(orderEntity, orderDTO);
+        orderValidator.validateOrder(orderEntity);
         orderValidator.uuidValidFormat(uuid);
         orderEntity.setDelivered(true);
         orderEntity.setDeliveredDate(dateTimeToISO.convert(timeStamp));
