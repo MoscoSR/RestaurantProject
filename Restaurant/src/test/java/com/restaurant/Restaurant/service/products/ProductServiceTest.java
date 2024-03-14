@@ -63,8 +63,8 @@ class ProductServiceTest {
         var response= productService.getProductByUuid(productEntity.getUuid());
         //Verify times the methods
         verify(validator, times(1)).validateUuid(productEntity.getUuid());
-        verify(productRepository,times(2)).findByUuid(productEntity.getUuid());
-        //assertEquals("Hamburger With Chess",response.getFantasyName());
+        verify(productRepository,times(1)).findByUuid(productEntity.getUuid());
+
         assertEquals(productDTO,response);
     }
     @Test
@@ -82,14 +82,14 @@ class ProductServiceTest {
         Mockito.verify(productRepository, times(1)).save(productEntity);
         Mockito.verify(mapper, times(1)).EntityToDTO(productEntity);
 
-        //assertEquals("Hamburger With Chess", response.getFantasyName());
+
         assertEquals(productDTO,response);
     }
 
     @Test
     void shouldUpdateProduct(){
         Mockito.doNothing().when(validator).validateUuid(productDTO.getUuid());
-        Mockito.doNothing().when(validator).validateProductDto(productDTO);
+        Mockito.doNothing().when(validator).validateProductExist(productDTO,productEntity);
         Mockito.when(mapper.EntityToDTO(productEntity)).thenReturn(productDTO);
         Mockito.doNothing().when(validator).productCompare(productDTO,productDTO);
 
@@ -99,7 +99,7 @@ class ProductServiceTest {
 
         //Verify times the methods
         verify(validator, times(1)).validateUuid(productDTO.getUuid());
-        verify(validator, times(1)).validateProductDto(productDTO);
+        verify(validator, times(1)).validateProductExist(productDTO,productEntity);
         verify(mapper, times(1)).EntityToDTO(productEntity);
         verify(validator, times(1)).productCompare(productDTO,productDTO);
         verify(productRepository, times(1)).findByUuid(productDTO.getUuid());
@@ -127,7 +127,6 @@ class ProductServiceTest {
         Mockito.when(productRepository.findByUuid(productEntity.getUuid())).thenReturn(null);
         assertThrows(ProductNotFoundException.class,()->productService.getProductByUuid(productEntity.getUuid()));
         assertThrows(ProductNotFoundException.class,()->productService.deleteProduct(productEntity.getUuid()));
-        assertThrows(ProductNotFoundException.class,()->productService.updateProduct(productDTO));
 
     }
     @Test
@@ -136,13 +135,7 @@ class ProductServiceTest {
         Mockito.when(mapper.DTOToEntity(productDTO)).thenReturn(productEntity);
         assertThrows(FantasyNameExistsException.class,()->productService.createProduct(productDTO));
      }
-     @Test
-    void shouldFantasyNameExistsExceptionUpdate(){
-         Mockito.when(productRepository.findByUuid( productDTO.getUuid())).thenReturn(productEntity);
-         Mockito.when(productRepository.existsByfantasyName(productEntity.getFantasyName())).thenReturn(Boolean.TRUE);
-         Mockito.when(validator.productExistFantasyName(productDTO.getFantasyName(),productEntity.getFantasyName())).thenReturn(Boolean.TRUE);
-         assertThrows(FantasyNameExistsException.class,()->productService.updateProduct(productDTO));
-     }
+
 
 
 

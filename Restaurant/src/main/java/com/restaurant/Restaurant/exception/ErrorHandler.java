@@ -17,7 +17,7 @@ public class ErrorHandler {
                 .code(ExceptionCode.CLIENT_NOT_FOUND)
                 .description(clientNotFoundException.getMessage())
                 .timeStamp(LocalDateTime.now())
-                .exception(clientNotFoundException.getStackTrace().toString())
+                .exception(clientNotFoundException.getCause().toString())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -29,7 +29,7 @@ public class ErrorHandler {
                 .code(ExceptionCode.DATA_ALREADY_EXISTS)
                 .description(dataAlreadyExistsException.getMessage())
                 .timeStamp(LocalDateTime.now())
-                .exception(dataAlreadyExistsException.getStackTrace().toString())
+                .exception(dataAlreadyExistsException.getCause().toString())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
@@ -41,7 +41,7 @@ public class ErrorHandler {
                 .code(ExceptionCode.DOCUMENT_ALREADY_EXISTS)
                 .description(documentExistsException.getMessage())
                 .timeStamp(LocalDateTime.now())
-                .exception(documentExistsException.getStackTrace().toString())
+                .exception(documentExistsException.getCause().toString())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
@@ -53,7 +53,7 @@ public class ErrorHandler {
                 .code(ExceptionCode.FANTASY_NAME_ALREADY_EXISTS)
                 .description(fantasyNameExistsException.getMessage())
                 .timeStamp(LocalDateTime.now())
-                .exception(fantasyNameExistsException.getStackTrace().toString())
+                .exception(fantasyNameExistsException.getCause().toString())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
@@ -66,7 +66,7 @@ public class ErrorHandler {
                 .code(ExceptionCode.INVALID_OR_INCOMPLETE_DATA)
                 .description(invalidOrIncompleteDataException.getMessage())
                 .timeStamp(LocalDateTime.now())
-                .exception(invalidOrIncompleteDataException.getStackTrace().toString())
+                .exception(invalidOrIncompleteDataException.getCause().toString())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -78,7 +78,7 @@ public class ErrorHandler {
                 .code(ExceptionCode.PRODUCT_NOT_FOUND)
                 .description(productNotFoundException.getMessage())
                 .timeStamp(LocalDateTime.now())
-                .exception(productNotFoundException.getStackTrace().toString())
+                .exception(productNotFoundException.getCause().toString())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -90,7 +90,7 @@ public class ErrorHandler {
                 .code(ExceptionCode.INTERNAL_SERVER_ERROR)
                 .description(internalServerError.getMessage())
                 .timeStamp(LocalDateTime.now())
-                .exception(internalServerError.getStackTrace().toString())
+                .exception(internalServerError.getCause().toString())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

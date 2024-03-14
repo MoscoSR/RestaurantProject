@@ -108,6 +108,23 @@ class OrderServiceImplTest {
 
         orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator);
 
+             expectedDtoResult = OrderDTO.builder()
+                .uuid(UUID.randomUUID().toString())
+                .creationDateTime(orderEntity.getCreationDateTime())
+                .clientDocument(orderDTO.getClientDocument())
+                .productUuid(orderDTO.getProductUuid())
+                .quantity(2)
+                .extraInformation(orderDTO.getExtraInformation())
+                .subTotal(42016.82)
+                .tax(6722.6912)
+                .grandTotal(48739.5112)
+                .delivered(false)
+                .deliveredDate(null)
+                .build();
+
+
+        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator);
+
     }
 
     @Test
@@ -182,3 +199,4 @@ class OrderServiceImplTest {
     }
 
 }
+
