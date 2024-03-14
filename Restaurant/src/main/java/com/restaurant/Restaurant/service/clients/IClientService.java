@@ -9,7 +9,7 @@ public interface IClientService {
 
     ClientDTO getClient(String document);
     ClientDTO createClient(ClientDTO clientDTO);
-    ClientDTO updateClient(String document, ClientDTO clientDTO);
+    void updateClient(String document, ClientDTO clientDTO);
     void deleteClient(String  document);
 }
 

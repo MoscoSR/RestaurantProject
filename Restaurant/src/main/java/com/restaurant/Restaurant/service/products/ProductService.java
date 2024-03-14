@@ -1,14 +1,12 @@
 package com.restaurant.Restaurant.service.products;
 
 import com.restaurant.Restaurant.entity.ProductEntity;
-import com.restaurant.Restaurant.exception.impl.DataAlreadyExistsException;
 import com.restaurant.Restaurant.exception.impl.FantasyNameExistsException;
 import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.mapper.ProductMapper;
 import com.restaurant.Restaurant.models.dto.ProductDTO;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
 import com.restaurant.Restaurant.validator.ProductValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -16,11 +14,8 @@ import java.util.UUID;
 
 public class ProductService {
 
-    @Autowired
     private final IProductRepositoryJPA productRepository;
-    @Autowired
     private final ProductMapper mapper;
-    @Autowired
     private final ProductValidator validator;
     public ProductService(IProductRepositoryJPA productRepository, ProductMapper mapper, ProductValidator validator) {
         this.productRepository = productRepository;
@@ -45,6 +40,7 @@ public class ProductService {
 
     }
     public void updateProduct(ProductDTO product) {
+        validator.validateProductDto(product);
         validator.validateUuid(product.getUuid());
         ProductEntity productExist= productRepository.findByUuid(product.getUuid());
         validator.validateProductExist(product,productExist);

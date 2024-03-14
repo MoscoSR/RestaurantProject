@@ -63,15 +63,14 @@ public class ClientController {
     }
 
     @PutMapping("/{document}")
-    public ResponseEntity<?>UpdateClient(@PathVariable String document, @RequestBody ClientDTO clientDTO) {
+    public void UpdateClient(@PathVariable String document, @RequestBody ClientDTO clientDTO) {
         try {
-            return ResponseEntity
-                    .status(HttpStatus.ACCEPTED)
-                    .body(this.clientService.updateClient(document, clientDTO));
+            clientService.updateClient(document, clientDTO);
+            ResponseEntity.status(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             ClientErrorDTO clientErrorDTO = new ClientErrorDTO();
             clientErrorDTO.setMessage(e.getMessage());
-            return ResponseEntity
+            ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(clientErrorDTO.getMessage());
         }

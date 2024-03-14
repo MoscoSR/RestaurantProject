@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class ClientDTO {
-    public Long id;
     public String document;
     public String name;
     public String email;

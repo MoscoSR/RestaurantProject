@@ -61,19 +61,12 @@ public class ClientService  implements IClientService {
         clientEntity.setEmail(clientDTO.getEmail());
         clientEntity.setPhone(clientDTO.getPhone());
         clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
-//        ClientEntity clientEntity = ClientEntity.builder()
-//                .name(clientDTO.getName())
-//                .document(clientDTO.getDocument())
-//                .email(clientDTO.getEmail())
-//                .phone(clientDTO.getPhone())
-//                .deliveryAddress(clientDTO.getDeliveryAddress())
-//                .build();
         clientRepository.save(clientEntity);
         return mapper.convert(clientEntity);
     }
 
     @Override
-    public ClientDTO updateClient(String document, ClientDTO clientDTO) {
+    public void updateClient(String document, ClientDTO clientDTO) {
 
         clientValidator.validateCliente(clientDTO);
         clientValidator.validateDocumentFormat(clientDTO.getDocument());
@@ -90,7 +83,7 @@ public class ClientService  implements IClientService {
             clientEntity.setPhone(clientDTO.getPhone());
             clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
             clientRepository.save(clientEntity);
-            return mapper.convert(clientEntity);
+            mapper.convert(clientEntity);
         } catch (Exception e) {
             throw new InternalServerError("Error general del servidor al actualizar el cliente");
         }
