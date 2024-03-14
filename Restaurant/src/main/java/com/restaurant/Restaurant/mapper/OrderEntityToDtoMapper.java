@@ -22,7 +22,7 @@ public class OrderEntityToDtoMapper {
                 .tax(orderEntity.getTax())
                 .grandTotal(orderEntity.getGrandTotal())
                 .delivered(orderEntity.getDelivered())
-                .deliveredDateTime(orderEntity.getDeliveredDateTime())
+                .deliveredDateTime(orderEntity.getDeliveredDate())
                 .build();
     }
 

@@ -1,19 +1,17 @@
 package com.restaurant.Restaurant.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Null;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Table(name = "orders")
+@Entity
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 public class OrderEntity {
 
     @Id
@@ -51,7 +49,5 @@ public class OrderEntity {
     private Boolean delivered = false;
 
     @Column
-    private LocalDateTime deliveredDateTime;
+    private LocalDateTime deliveredDate;
 }
-
-

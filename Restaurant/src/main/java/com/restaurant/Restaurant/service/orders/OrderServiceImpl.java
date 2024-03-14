@@ -43,8 +43,6 @@ public class OrderServiceImpl implements IOrderService{
         this.clientValidator = clientValidator;
     }
 
-    @Autowired
-
 
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -63,16 +61,16 @@ public class OrderServiceImpl implements IOrderService{
         double grandTotal = subTotal + tax;
 
         OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setUuid(UUID.randomUUID().toString());
-        orderEntity.setCreationDateTime(LocalDateTime.now());
-        orderEntity.setClientDocument(orderDTO.getClientDocument());
-        orderEntity.setProductUuid(orderDTO.getProductUuid());
-        orderEntity.setQuantity(orderDTO.getQuantity());
-        orderEntity.setExtraInformation(orderDTO.getExtraInformation());
-        orderEntity.setSubTotal(subTotal);
-        orderEntity.setTax(tax);
-        orderEntity.setGrandTotal(grandTotal);
-        return mapper.convert(orderRepository.save(orderEntity));
+            orderEntity.setUuid(UUID.randomUUID().toString());
+            orderEntity.setCreationDateTime(LocalDateTime.now());
+            orderEntity.setClientDocument(orderDTO.getClientDocument());
+            orderEntity.setProductUuid(orderDTO.getProductUuid());
+            orderEntity.setQuantity(orderDTO.getQuantity());
+            orderEntity.setExtraInformation(orderDTO.getExtraInformation());
+            orderEntity.setSubTotal(subTotal);
+            orderEntity.setTax(tax);
+            orderEntity.setGrandTotal(grandTotal);
+            return mapper.convert(orderRepository.save(orderEntity));
     }
 
 
@@ -82,7 +80,7 @@ public class OrderServiceImpl implements IOrderService{
         orderValidator.validateOrder(orderEntity, orderDTO);
         orderValidator.uuidValidFormat(uuid);
         orderEntity.setDelivered(true);
-        orderEntity.setDeliveredDateTime(timeStamp);
+        orderEntity.setDeliveredDate(timeStamp);
         orderRepository.save(orderEntity);
         return mapper.convert(orderEntity);
     }

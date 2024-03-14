@@ -11,16 +11,15 @@ import com.restaurant.Restaurant.repository.IOrderRepository;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
 import com.restaurant.Restaurant.validator.ClientValidator;
 import com.restaurant.Restaurant.validator.OrderValidator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,28 +29,23 @@ import static org.mockito.ArgumentMatchers.any;
 class OrderServiceImplTest {
 
     OrderDTO orderDTO;
+    OrderDTO expectedDtoResult;
     OrderEntity orderEntity;
     ProductEntity product;
     ClientEntity client;
 
-    @InjectMocks
     private OrderServiceImpl orderService;
 
     @Mock
     private IOrderRepository orderRepository;
-
     @Mock
     private OrderEntityToDtoMapper mapper;
-
     @Mock
     IProductRepositoryJPA productRepository;
-
     @Mock
     ClientRepository clientRepository;
-
     @Mock
     private OrderValidator validator;
-
     @Mock
     private ClientValidator clientValidator;
 
@@ -78,7 +72,7 @@ class OrderServiceImplTest {
                 .tax(6722.6912)
                 .grandTotal(48739.5112)
                 .delivered(false)
-                .deliveredDateTime(null)
+                .deliveredDate(null)
                 .build();
 
         product = ProductEntity.builder()
@@ -97,6 +91,23 @@ class OrderServiceImplTest {
         client.setPhone("3101234567");
         client.setDeliveryAddress("Calle 15 # 45-78");
 
+        expectedDtoResult = OrderDTO.builder()
+                .uuid(UUID.randomUUID().toString())
+                .creationDateTime(orderEntity.getCreationDateTime())
+                .clientDocument(orderDTO.getClientDocument())
+                .productUuid(orderDTO.getProductUuid())
+                .quantity(2)
+                .extraInformation(orderDTO.getExtraInformation())
+                .subTotal(42016.82)
+                .tax(6722.6912)
+                .grandTotal(48739.5112)
+                .delivered(false)
+                .deliveredDate(null)
+                .build();
+
+
+        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator);
+
     }
 
     @Test
@@ -105,40 +116,52 @@ class OrderServiceImplTest {
         Mockito.when(productRepository.findByUuid(Mockito.anyString())).thenReturn(product);
         Mockito.when(clientRepository.findByDocument(Mockito.anyString())).thenReturn(client);
 
-        Assertions.assertNotNull(orderDTO.getQuantity());
-        Assertions.assertNotNull(product);
-        Assertions.assertNotNull(client);
-
         Mockito.doNothing().when(validator).verifyFields(any());
-        Mockito.doNothing().when(validator).verifyProductExists(any(), any());
+        Mockito.doNothing().when(validator).verifyProductExists(any(),any());
         Mockito.doNothing().when(validator).verifyClientExists(any(), any());
-        Mockito.doNothing().when(validator).uuidValidFormat(any());
-        Mockito.doNothing().when(clientValidator).validateDocumentFormat(any());
 
+        Mockito.doReturn(expectedDtoResult).when(mapper).convert(any(OrderEntity.class));
 
-        // Create expected result
-        OrderDTO orderDTOResult = OrderDTO.builder()
-                .uuid(UUID.randomUUID().toString())
-                .creationDateTime(orderEntity.getCreationDateTime())
-                .clientDocument("CC-12345")
-                .productUuid("256309c6-5b24-499e-9ccb-6e69b781690a")
-                .quantity(2)
-                .extraInformation("Hamburguer with french fries")
-                .subTotal(42016.82)
-                .tax(6722.6912)
-                .grandTotal(48739.5112)
-                .delivered(false)
-                .deliveredDate(null)
-                .build();
-
-        Mockito.doReturn(orderDTOResult).when(mapper).convert(any(OrderEntity.class));
         Mockito.when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
 
         var result = orderService.createOrder(orderDTO);
 
         assertNotNull(result);
-        assertEquals(orderDTOResult.getUuid(), result.getUuid());
-        assertEquals(orderDTOResult.getCreationDateTime(), result.getCreationDateTime());
+        assertEquals(expectedDtoResult,result);
+    }
+
+
+    @Test
+    void shouldUpdateAOrderSuccessfully(){
+
+        expectedDtoResult = OrderDTO.builder()
+                .uuid(UUID.randomUUID().toString())
+                .creationDateTime(orderEntity.getCreationDateTime())
+                .clientDocument(orderDTO.getClientDocument())
+                .productUuid(orderDTO.getProductUuid())
+                .quantity(2)
+                .extraInformation(orderDTO.getExtraInformation())
+                .subTotal(42016.82)
+                .tax(6722.6912)
+                .grandTotal(48739.5112)
+                .delivered(false)
+                .deliveredDate( LocalDateTime.parse("2024-03-11T15:05:00"))
+                .build();
+
+        Mockito.when(orderRepository.findByUuid(Mockito.anyString())).thenReturn(Optional.ofNullable(orderEntity));
+
+        Mockito.doNothing().when(validator).uuidValidFormat(any());
+        Mockito.doNothing().when(validator).verifyFields(any());
+
+        Mockito.doReturn(expectedDtoResult).when(mapper).convert(any(OrderEntity.class));
+        Mockito.when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
+
+        var result = orderService.updateOrderDeliveredByUuid
+                (expectedDtoResult.getUuid(), LocalDateTime.parse("2024-03-11T15:05:00"), orderDTO);
+
+        assertNotNull(result);
+        assertEquals(expectedDtoResult, result);
+
     }
 
     @Test
@@ -157,4 +180,5 @@ class OrderServiceImplTest {
         });
 
     }
+
 }
