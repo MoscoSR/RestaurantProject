@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 package com.restaurant.Restaurant.validator;
 
 import com.restaurant.Restaurant.exception.impl.DataAlreadyExistsException;
@@ -42,7 +51,7 @@ public class ClientValidator {
         }
     }
 
-    public static void handleGeneralServerError(Exception e) {
-        throw new RuntimeException("Error general del servidor", e);
+    public boolean clientExistByDocument(String clientExist, String clientDTO) {
+        return !clientExist.equalsIgnoreCase(clientDTO);
     }
 }
