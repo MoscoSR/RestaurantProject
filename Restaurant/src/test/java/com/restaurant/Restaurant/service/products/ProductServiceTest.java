@@ -89,6 +89,7 @@ class ProductServiceTest {
     @Test
     void shouldUpdateProduct(){
         Mockito.doNothing().when(validator).validateUuid(productDTO.getUuid());
+        Mockito.doNothing().when(validator).validateProductDto(productDTO);
         Mockito.doNothing().when(validator).validateProductExist(productDTO,productEntity);
         Mockito.when(mapper.EntityToDTO(productEntity)).thenReturn(productDTO);
         Mockito.doNothing().when(validator).productCompare(productDTO,productDTO);
