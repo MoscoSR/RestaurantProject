@@ -3,7 +3,6 @@
 package com.restaurant.Restaurant.service.clients;
 import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.exception.impl.ClientNotFoundException;
-import com.restaurant.Restaurant.exception.impl.DocumentExistsException;
 import com.restaurant.Restaurant.exception.impl.InternalServerError;
 import com.restaurant.Restaurant.mapper.ClientEntityToDtoMapper;
 import com.restaurant.Restaurant.models.dto.ClientDTO;
@@ -51,50 +50,39 @@ public class ClientService  implements IClientService {
     public ClientDTO createClient(ClientDTO clientDTO) {
         clientValidator.validateCliente(clientDTO);
         clientValidator.validateDocumentFormat(clientDTO.getDocument());
-
-        if(clientRepository.existsByDocument(clientDTO.getDocument())){
-            throw new DocumentExistsException("El cliente ya existe");
-        }
-        ClientEntity clientEntity = new ClientEntity();
-        clientEntity.setName(clientDTO.getName());
-        clientEntity.setDocument(clientDTO.getDocument());
-        clientEntity.setEmail(clientDTO.getEmail());
-        clientEntity.setPhone(clientDTO.getPhone());
-        clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
-//        ClientEntity clientEntity = ClientEntity.builder()
-//                .name(clientDTO.getName())
-//                .document(clientDTO.getDocument())
-//                .email(clientDTO.getEmail())
-//                .phone(clientDTO.getPhone())
-//                .deliveryAddress(clientDTO.getDeliveryAddress())
-//                .build();
+        ClientEntity clientEntity = mapper.convertDTO(clientDTO);
         clientRepository.save(clientEntity);
         return mapper.convert(clientEntity);
     }
 
-    @Override
-    public ClientDTO updateClient(String document, ClientDTO clientDTO) {
-
+    public  ClientDTO updateClient(String document, ClientDTO clientDTO) {
         clientValidator.validateCliente(clientDTO);
         clientValidator.validateDocumentFormat(clientDTO.getDocument());
         ClientEntity clientEntity = clientRepository.findByDocument(document);
 
         if (clientEntity == null) {
-            throw new ClientNotFoundException("Client with docuement:  " + clientDTO.getDocument() + "not found");
+            throw new ClientNotFoundException("No se encontró ningún cliente con el documento proporcionado");
         }
 
-        try {
-            clientEntity.setName(clientDTO.getName());
-            clientEntity.setDocument(clientDTO.getDocument());
-            clientEntity.setEmail(clientDTO.getEmail());
-            clientEntity.setPhone(clientDTO.getPhone());
-            clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
-            clientRepository.save(clientEntity);
-            return mapper.convert(clientEntity);
-        } catch (Exception e) {
-            throw new InternalServerError("Error general del servidor al actualizar el cliente");
+        // Verificar si existe otro cliente con el mismo documento diferente al que se está editando
+        ClientEntity existingClient = clientRepository.findByDocument(document);
+
+        clientValidator.validateCliente(clientDTO);
+        clientValidator.clientCompare(clientDTO, mapper.convert(existingClient));
+
+        if (clientRepository.existsByDocument(clientDTO.getDocument()) && clientValidator.clientExistByDocument(existingClient.getDocument(), clientDTO.getDocument())){
+            throw new ClientNotFoundException("Cliente con" + clientDTO.getDocument() + "no existe");
         }
+        //clientEntity.setId(clientDTO.getId());
+        clientEntity.setName(clientDTO.getName());
+        clientEntity.setDocument(clientDTO.getDocument());
+        clientEntity.setEmail(clientDTO.getEmail());
+        clientEntity.setPhone(clientDTO.getPhone());
+        clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
+        clientRepository.save(clientEntity);
+        return mapper.convert(clientEntity);
     }
+
 
     @Override
     public void deleteClient(String document) {
@@ -103,6 +91,6 @@ public class ClientService  implements IClientService {
         if (clientEntity == null) {
             throw new ClientNotFoundException("No se encontró ningún cliente con el documento proporcionado");
         }
-        clientRepository.delete(clientEntity);
+        clientRepository.deleteByDocument(document);
     }
 }

@@ -1,3 +1,4 @@
+
 package com.restaurant.Restaurant.repository;
 
 
@@ -6,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClientRepository extends JpaRepository<ClientEntity, Long> {
     ClientEntity findByDocument(String document);
-    ClientEntity deleteByDocument(String document);
-    Boolean existsByDocument(String document);
+    void deleteByDocument(String document);
+    boolean existsByDocument(String document);
 
 }
