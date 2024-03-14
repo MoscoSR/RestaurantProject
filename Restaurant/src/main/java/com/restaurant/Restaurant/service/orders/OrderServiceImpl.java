@@ -1,5 +1,6 @@
 package com.restaurant.Restaurant.service.orders;
 
+import com.restaurant.Restaurant.converter.DateTimeToISO;
 import com.restaurant.Restaurant.converter.DoubleTwoDecimals;
 import com.restaurant.Restaurant.entity.OrderEntity;
 import com.restaurant.Restaurant.entity.ClientEntity;
@@ -38,9 +39,15 @@ public class OrderServiceImpl implements IOrderService{
 
     private final DoubleTwoDecimals doubleTwoDecimals;
 
+    private final DateTimeToISO dateTimeToISO;
+
     private final ProductValidator productValidator;
 
-    public OrderServiceImpl(IOrderRepository orderRepository, OrderEntityToDtoMapper mapper, IProductRepositoryJPA productRepository, OrderValidator orderValidator, ClientRepository clientRepository, ClientValidator clientValidator, DoubleTwoDecimals doubleTwoDecimals, ProductValidator productValidator) {
+    public OrderServiceImpl(
+            IOrderRepository orderRepository, OrderEntityToDtoMapper mapper,
+            IProductRepositoryJPA productRepository, OrderValidator orderValidator,
+            ClientRepository clientRepository, ClientValidator clientValidator,
+            DoubleTwoDecimals doubleTwoDecimals, ProductValidator productValidator, DateTimeToISO dateTimeToISO) {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
         this.productRepository = productRepository;
@@ -49,6 +56,8 @@ public class OrderServiceImpl implements IOrderService{
         this.clientValidator = clientValidator;
         this.doubleTwoDecimals = doubleTwoDecimals;
         this.productValidator = productValidator;
+        this.dateTimeToISO = dateTimeToISO;
+
 
     }
 
@@ -72,7 +81,7 @@ public class OrderServiceImpl implements IOrderService{
 
         OrderEntity orderEntity = new OrderEntity();
             orderEntity.setUuid(UUID.randomUUID().toString());
-            orderEntity.setCreationDateTime(LocalDateTime.now());
+            orderEntity.setCreationDateTime(dateTimeToISO.convert(LocalDateTime.now()));
             orderEntity.setClientDocument(orderDTO.getClientDocument());
             orderEntity.setProductUuid(orderDTO.getProductUuid());
             orderEntity.setQuantity(orderDTO.getQuantity());
@@ -90,7 +99,7 @@ public class OrderServiceImpl implements IOrderService{
         orderValidator.validateOrder(orderEntity, orderDTO);
         orderValidator.uuidValidFormat(uuid);
         orderEntity.setDelivered(true);
-        orderEntity.setDeliveredDate(timeStamp);
+        orderEntity.setDeliveredDate(dateTimeToISO.convert(timeStamp));
         orderRepository.save(orderEntity);
         return mapper.convert(orderEntity);
     }

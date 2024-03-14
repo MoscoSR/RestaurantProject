@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDateTime;
@@ -42,7 +43,7 @@ class OrderControllerTest {
         Mockito.when(service.createOrder(orderDTO)).thenReturn(orderDTO);
         var response = orderController.createOrder(orderDTO);
         verify(service, times(1)).createOrder(orderDTO);
-        assertEquals(ResponseEntity.ok(orderDTO), response);
+        assertEquals(ResponseEntity.status(HttpStatus.CREATED).body(orderDTO), response);
     }
 
     @Test

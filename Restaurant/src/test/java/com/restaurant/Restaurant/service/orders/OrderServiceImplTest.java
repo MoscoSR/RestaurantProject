@@ -1,5 +1,6 @@
 package com.restaurant.Restaurant.service.orders;
 
+import com.restaurant.Restaurant.converter.DateTimeToISO;
 import com.restaurant.Restaurant.converter.DoubleTwoDecimals;
 import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.entity.OrderEntity;
@@ -55,6 +56,8 @@ class OrderServiceImplTest {
     private ProductValidator productValidator;
     @Mock
     private DoubleTwoDecimals doubleTwoDecimals;
+    @Mock
+    private DateTimeToISO dateTimeToISO;
 
 
     @BeforeEach
@@ -70,7 +73,7 @@ class OrderServiceImplTest {
 
         orderEntity = OrderEntity.builder()
                 .uuid(UUID.randomUUID().toString())
-                .creationDateTime(LocalDateTime.parse("2024-03-11T20:03:31.5885433"))
+                .creationDateTime("2024-03-11T20:03:31")
                 .clientDocument("CC-12345")
                 .productUuid("256309c6-5b24-499e-9ccb-6e69b781690a")
                 .quantity(2)
@@ -113,7 +116,7 @@ class OrderServiceImplTest {
                 .build();
 
 
-        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator, doubleTwoDecimals, productValidator);
+        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator, doubleTwoDecimals, productValidator, dateTimeToISO);
 
              expectedDtoResult = OrderDTO.builder()
                 .uuid(UUID.randomUUID().toString())
@@ -130,7 +133,7 @@ class OrderServiceImplTest {
                 .build();
 
 
-        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator, doubleTwoDecimals, productValidator);
+        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator, doubleTwoDecimals, productValidator, dateTimeToISO);
 
     }
 
@@ -169,7 +172,7 @@ class OrderServiceImplTest {
                 .tax(6722.6912)
                 .grandTotal(48739.5112)
                 .delivered(false)
-                .deliveredDate( LocalDateTime.parse("2024-03-11T15:05:00"))
+                .deliveredDate("2024-03-11T15:05:00")
                 .build();
 
         Mockito.when(orderRepository.findByUuid(anyString())).thenReturn(Optional.ofNullable(orderEntity));

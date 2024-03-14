@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder // Lombok annotation to create a builder for the class, avoiding the creation of the constructor
 public class OrderDTO {
     private String uuid;
-    private LocalDateTime creationDateTime;
+    private String creationDateTime;
     private String clientDocument;
     private String productUuid;
     private Integer quantity;
@@ -22,5 +22,5 @@ public class OrderDTO {
     private Double tax;
     private Double grandTotal;
     private Boolean delivered;
-    private LocalDateTime deliveredDate;
+    private String deliveredDate;
 }

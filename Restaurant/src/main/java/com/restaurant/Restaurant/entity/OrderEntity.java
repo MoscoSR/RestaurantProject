@@ -22,7 +22,7 @@ public class OrderEntity {
     private String uuid;
 
     @Column(nullable = false)
-    private LocalDateTime creationDateTime;
+    private String creationDateTime;
 
     @Column (nullable = false)
     private String clientDocument;
@@ -49,5 +49,5 @@ public class OrderEntity {
     private Boolean delivered = false;
 
     @Column
-    private LocalDateTime deliveredDate;
+    private String deliveredDate;
 }
