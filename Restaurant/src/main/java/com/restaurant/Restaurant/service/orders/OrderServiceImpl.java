@@ -3,22 +3,17 @@ package com.restaurant.Restaurant.service.orders;
 import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.entity.OrderEntity;
 import com.restaurant.Restaurant.entity.ProductEntity;
-import com.restaurant.Restaurant.exception.impl.ClientNotFoundException;
-import com.restaurant.Restaurant.exception.impl.InvalidOrIncompleteDataException;
-import com.restaurant.Restaurant.exception.impl.ProductNotFoundException;
 import com.restaurant.Restaurant.mapper.OrderEntityToDtoMapper;
 import com.restaurant.Restaurant.models.dto.OrderDTO;
 import com.restaurant.Restaurant.repository.ClientRepository;
 import com.restaurant.Restaurant.repository.IOrderRepository;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
 import com.restaurant.Restaurant.validator.OrderValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 @Service
 public class OrderServiceImpl implements IOrderService{
@@ -48,8 +43,8 @@ public class OrderServiceImpl implements IOrderService{
 
         validator.verifyFields(orderDTO);
 
-        ProductEntity product = productRepository.findByUuid(orderDTO.getProductUuid());
-        ClientEntity client = clientRepository.findByDocument(orderDTO.getClientDocument());
+        ProductEntity product = productRepository.findByUuid(String.valueOf(orderDTO.getProductUuid()));
+        ClientEntity client = clientRepository.findByDocument(String.valueOf(orderDTO.getClientDocument()));
 
         validator.verifyProductUuidExists(product);
         validator.verifyClientExists(client);
@@ -61,8 +56,8 @@ public class OrderServiceImpl implements IOrderService{
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setUuid(UUID.randomUUID().toString());
         orderEntity.setCreationDateTime(LocalDateTime.now());
-        orderEntity.setClientDocument(orderDTO.getClientDocument());
-        orderEntity.setProductUuid(orderDTO.getProductUuid());
+        orderEntity.setClientDocument(product.getUuid());
+        orderEntity.setProductUuid(client.getDocument());
         orderEntity.setQuantity(orderDTO.getQuantity());
         orderEntity.setExtraInformation(orderDTO.getExtraInformation());
         orderEntity.setSubTotal(subTotal);
@@ -73,7 +68,7 @@ public class OrderServiceImpl implements IOrderService{
     }
 
     @Override
-    public OrderDTO updateOrderDelivered(String uuid, LocalDateTime timeStamp, OrderDTO orderDTO) {
+    public OrderDTO updateOrderDelivered(String uuid, LocalDateTime timeStamp) {
 
         OrderEntity orderEntity = orderRepository.findByUuid(uuid);
 
