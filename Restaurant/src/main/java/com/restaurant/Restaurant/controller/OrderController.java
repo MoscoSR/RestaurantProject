@@ -32,11 +32,11 @@ public class OrderController {
     }
 
     @PutMapping(path = "/{uuid}/delivered/{timestamp}")
-    public ResponseEntity<?> updateOrderDelivered(@PathVariable Long uuid, @PathVariable LocalDateTime timestamp, @RequestBody OrderDTO orderDTO){
+    public ResponseEntity<?> updateOrderDelivered(@PathVariable String uuid, @PathVariable LocalDateTime timestamp, @RequestBody OrderDTO orderDTO){
         try{
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(this.service.updateOrderDelivered(uuid, timestamp, orderDTO));
+                    .body(this.service.updateOrderDeliveredByUuid(uuid, timestamp, orderDTO));
         }catch (Exception e){
             OrderErrorDTO orderErrorDTO = new OrderErrorDTO();
             orderErrorDTO.setMessage(e.getMessage());

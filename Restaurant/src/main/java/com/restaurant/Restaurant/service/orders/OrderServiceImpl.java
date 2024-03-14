@@ -8,6 +8,7 @@ import com.restaurant.Restaurant.models.dto.OrderDTO;
 import com.restaurant.Restaurant.repository.ClientRepository;
 import com.restaurant.Restaurant.repository.IOrderRepository;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
+import com.restaurant.Restaurant.validator.ClientValidator;
 import com.restaurant.Restaurant.validator.OrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements IOrderService{
-
 
     private final IOrderRepository orderRepository;
 
@@ -32,14 +32,19 @@ public class OrderServiceImpl implements IOrderService{
 
     private final ClientRepository clientRepository;
 
-    @Autowired
-    public OrderServiceImpl(IOrderRepository orderRepository, OrderEntityToDtoMapper mapper, IProductRepositoryJPA productRepository, OrderValidator orderValidator, ClientRepository clientRepository) {
+    private final ClientValidator clientValidator;
+
+    public OrderServiceImpl(IOrderRepository orderRepository, OrderEntityToDtoMapper mapper, IProductRepositoryJPA productRepository, OrderValidator orderValidator, ClientRepository clientRepository, ClientValidator clientValidator) {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
         this.productRepository = productRepository;
         this.orderValidator = orderValidator;
         this.clientRepository = clientRepository;
+        this.clientValidator = clientValidator;
     }
+
+    @Autowired
+
 
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
@@ -47,9 +52,11 @@ public class OrderServiceImpl implements IOrderService{
         ProductEntity product = productRepository.findByUuid(orderDTO.getProductUuid());
         ClientEntity client = clientRepository.findByDocument(orderDTO.getClientDocument());
 
-        orderValidator.validateOrderData(orderDTO);
-        orderValidator.validateProduct(product, orderDTO);
-        orderValidator.validateClient(client, orderDTO);
+        orderValidator.verifyFields(orderDTO);
+        orderValidator.uuidValidFormat(orderDTO.getProductUuid());
+        orderValidator.verifyProductExists(product, orderDTO);
+        orderValidator.verifyClientExists(client, orderDTO);
+        clientValidator.validateDocumentFormat(orderDTO.getClientDocument());
 
         double subTotal =  product.getPrice() * orderDTO.getQuantity();
         double tax = subTotal * 0.19D;
@@ -65,16 +72,15 @@ public class OrderServiceImpl implements IOrderService{
         orderEntity.setSubTotal(subTotal);
         orderEntity.setTax(tax);
         orderEntity.setGrandTotal(grandTotal);
-
-        orderRepository.save(orderEntity);
-
-        return mapper.convert(orderEntity);
+        return mapper.convert(orderRepository.save(orderEntity));
     }
+
 
     @Override
     public OrderDTO updateOrderDeliveredByUuid(String uuid, LocalDateTime timeStamp, OrderDTO orderDTO) {
         OrderEntity orderEntity = orderRepository.findByUuid(uuid).orElse(null);
         orderValidator.validateOrder(orderEntity, orderDTO);
+        orderValidator.uuidValidFormat(uuid);
         orderEntity.setDelivered(true);
         orderEntity.setDeliveredDateTime(timeStamp);
         orderRepository.save(orderEntity);

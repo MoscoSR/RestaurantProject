@@ -3,6 +3,7 @@
 package com.restaurant.Restaurant.service.clients;
 import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.exception.impl.ClientNotFoundException;
+import com.restaurant.Restaurant.exception.impl.DocumentExistsException;
 import com.restaurant.Restaurant.exception.impl.InternalServerError;
 import com.restaurant.Restaurant.mapper.ClientEntityToDtoMapper;
 import com.restaurant.Restaurant.models.dto.ClientDTO;
@@ -50,12 +51,23 @@ public class ClientService  implements IClientService {
     public ClientDTO createClient(ClientDTO clientDTO) {
         clientValidator.validateCliente(clientDTO);
         clientValidator.validateDocumentFormat(clientDTO.getDocument());
+
+        if(clientRepository.existsByDocument(clientDTO.getDocument())){
+            throw new DocumentExistsException("El cliente ya existe");
+        }
         ClientEntity clientEntity = new ClientEntity();
         clientEntity.setName(clientDTO.getName());
         clientEntity.setDocument(clientDTO.getDocument());
         clientEntity.setEmail(clientDTO.getEmail());
         clientEntity.setPhone(clientDTO.getPhone());
         clientEntity.setDeliveryAddress(clientDTO.getDeliveryAddress());
+//        ClientEntity clientEntity = ClientEntity.builder()
+//                .name(clientDTO.getName())
+//                .document(clientDTO.getDocument())
+//                .email(clientDTO.getEmail())
+//                .phone(clientDTO.getPhone())
+//                .deliveryAddress(clientDTO.getDeliveryAddress())
+//                .build();
         clientRepository.save(clientEntity);
         return mapper.convert(clientEntity);
     }

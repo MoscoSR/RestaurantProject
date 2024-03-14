@@ -7,7 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class OrderControllerTest {
 
     @Test
-    void updateOrderDelivered() {
+    void createOrder() {
+    }
 
+    @Test
+    void updateOrderDelivered() {
     }
 }
