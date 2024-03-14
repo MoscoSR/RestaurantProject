@@ -22,6 +22,5 @@ public class OrderDTO {
     private Double tax;
     private Double grandTotal;
     private Boolean delivered;
-    private LocalDateTime deliveredDateTime;
     private LocalDateTime deliveredDate;
 }

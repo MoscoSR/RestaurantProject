@@ -16,7 +16,7 @@ public class OrderController {
 
     @Autowired
     OrderServiceImpl service;
-    @PostMapping("/newOrders")
+    @PostMapping("/")
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO){
         try{
             return ResponseEntity

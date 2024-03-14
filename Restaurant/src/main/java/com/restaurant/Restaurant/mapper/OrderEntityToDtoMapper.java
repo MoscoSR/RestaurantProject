@@ -21,7 +21,6 @@ public class OrderEntityToDtoMapper {
                 .tax(orderEntity.getTax())
                 .grandTotal(orderEntity.getGrandTotal())
                 .delivered(orderEntity.getDelivered())
-                .deliveredDateTime(orderEntity.getDeliveredDate())
                 .build();
     }
 

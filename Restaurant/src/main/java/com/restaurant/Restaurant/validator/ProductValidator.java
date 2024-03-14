@@ -37,13 +37,11 @@ public class ProductValidator {
             throw  new ProductNotFoundException("Product con uuid " + productDTO.getUuid() + " no existe");
         }
     }
-    public void validateUuid(String uuidString) {
-        try {
-            // Intentar convertir la string a un UUID
-            UUID uuid = UUID.fromString(uuidString);
-        } catch (IllegalArgumentException e) {
-            // Si la string no es un UUID válido, se lanza esta excepción
-            throw new InvalidOrIncompleteDataException("Uuid no es válido");
+
+    public void validateUuid(String uuid){
+        Pattern UuidPattern= Pattern.compile("^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$");
+        if (!UuidPattern.matcher(uuid).matches()){
+            throw new InvalidOrIncompleteDataException("Uuid no es valido");
         }
     }
     public void productCompare(ProductDTO productDTO, ProductDTO productExist){

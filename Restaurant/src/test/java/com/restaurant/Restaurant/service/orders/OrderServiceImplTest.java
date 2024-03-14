@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
@@ -130,8 +131,8 @@ class OrderServiceImplTest {
     @Test
     void shouldCreateANewOrderSuccessfully(){
 
-        Mockito.when(productRepository.findByUuid(Mockito.anyString())).thenReturn(product);
-        Mockito.when(clientRepository.findByDocument(Mockito.anyString())).thenReturn(client);
+        Mockito.when(productRepository.findByUuid(anyString())).thenReturn(product);
+        Mockito.when(clientRepository.findByDocument(anyString())).thenReturn(client);
 
         Mockito.doNothing().when(validator).verifyFields(any());
         Mockito.doNothing().when(validator).verifyProductExists(any(),any());
@@ -165,10 +166,10 @@ class OrderServiceImplTest {
                 .deliveredDate( LocalDateTime.parse("2024-03-11T15:05:00"))
                 .build();
 
-        Mockito.when(orderRepository.findByUuid(Mockito.anyString())).thenReturn(Optional.ofNullable(orderEntity));
+        Mockito.when(orderRepository.findByUuid(anyString())).thenReturn(Optional.ofNullable(orderEntity));
 
         Mockito.doNothing().when(validator).uuidValidFormat(any());
-        Mockito.doNothing().when(validator).verifyFields(any());
+        Mockito.lenient().doNothing().when(validator).verifyFields(any());
 
         Mockito.doReturn(expectedDtoResult).when(mapper).convert(any(OrderEntity.class));
         Mockito.when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);

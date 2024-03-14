@@ -10,6 +10,7 @@ import com.restaurant.Restaurant.repository.IOrderRepository;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
 import com.restaurant.Restaurant.validator.ClientValidator;
 import com.restaurant.Restaurant.validator.OrderValidator;
+import com.restaurant.Restaurant.validator.ProductValidator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,13 +35,17 @@ public class OrderServiceImpl implements IOrderService{
 
     private final ClientValidator clientValidator;
 
-    public OrderServiceImpl(IOrderRepository orderRepository, OrderEntityToDtoMapper mapper, IProductRepositoryJPA productRepository, OrderValidator orderValidator, ClientRepository clientRepository, ClientValidator clientValidator) {
+//    private final ProductValidator productValidator;
+
+    public OrderServiceImpl(IOrderRepository orderRepository, OrderEntityToDtoMapper mapper, IProductRepositoryJPA productRepository, OrderValidator orderValidator, ClientRepository clientRepository, ClientValidator clientValidator/*, ProductValidator productValidator*/) {
         this.orderRepository = orderRepository;
         this.mapper = mapper;
         this.productRepository = productRepository;
         this.orderValidator = orderValidator;
         this.clientRepository = clientRepository;
         this.clientValidator = clientValidator;
+//        this.productValidator = productValidator;
+
     }
 
 
@@ -55,9 +60,10 @@ public class OrderServiceImpl implements IOrderService{
         orderValidator.verifyProductExists(product, orderDTO);
         orderValidator.verifyClientExists(client, orderDTO);
         clientValidator.validateDocumentFormat(orderDTO.getClientDocument());
+//        productValidator.validateUuid(orderDTO.getProductUuid());
 
         double subTotal =  product.getPrice() * orderDTO.getQuantity();
-        double tax = subTotal * 0.19D;
+        double tax = subTotal * 0.19;
         double grandTotal = subTotal + tax;
 
         OrderEntity orderEntity = new OrderEntity();
