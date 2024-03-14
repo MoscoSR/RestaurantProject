@@ -1,5 +1,6 @@
 package com.restaurant.Restaurant.service.orders;
 
+import com.restaurant.Restaurant.converter.DoubleTwoDecimals;
 import com.restaurant.Restaurant.entity.ClientEntity;
 import com.restaurant.Restaurant.entity.OrderEntity;
 import com.restaurant.Restaurant.entity.ProductEntity;
@@ -11,6 +12,7 @@ import com.restaurant.Restaurant.repository.IOrderRepository;
 import com.restaurant.Restaurant.repository.IProductRepositoryJPA;
 import com.restaurant.Restaurant.validator.ClientValidator;
 import com.restaurant.Restaurant.validator.OrderValidator;
+import com.restaurant.Restaurant.validator.ProductValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,6 +51,10 @@ class OrderServiceImplTest {
     private OrderValidator validator;
     @Mock
     private ClientValidator clientValidator;
+    @Mock
+    private ProductValidator productValidator;
+    @Mock
+    private DoubleTwoDecimals doubleTwoDecimals;
 
 
     @BeforeEach
@@ -107,7 +113,7 @@ class OrderServiceImplTest {
                 .build();
 
 
-        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator);
+        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator, doubleTwoDecimals, productValidator);
 
              expectedDtoResult = OrderDTO.builder()
                 .uuid(UUID.randomUUID().toString())
@@ -124,7 +130,7 @@ class OrderServiceImplTest {
                 .build();
 
 
-        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator);
+        orderService =  new OrderServiceImpl( orderRepository, mapper, productRepository, validator, clientRepository, clientValidator, doubleTwoDecimals, productValidator);
 
     }
 
