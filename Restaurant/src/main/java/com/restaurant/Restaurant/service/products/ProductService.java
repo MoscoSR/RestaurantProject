@@ -42,6 +42,7 @@ public class ProductService {
     public void updateProduct(ProductDTO product) {
         validator.validateProductDto(product);
         validator.validateUuid(product.getUuid());
+        validator.validateProductDto(product);
         ProductEntity productExist= productRepository.findByUuid(product.getUuid());
         validator.validateProductExist(product,productExist);
         validator.productCompare(product,mapper.EntityToDTO(productExist));

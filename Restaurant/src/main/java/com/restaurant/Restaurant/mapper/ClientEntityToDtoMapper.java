@@ -1,3 +1,5 @@
+
+
 package com.restaurant.Restaurant.mapper;
 
 import com.restaurant.Restaurant.entity.ClientEntity;
@@ -20,9 +22,14 @@ public class ClientEntityToDtoMapper implements Converter<ClientEntity, ClientDT
                 .deliveryAddress(clientEntity.getDeliveryAddress())
                 .build();
     }
-    public List<Long>getClients(List<ClientEntity> entityList) {
-        return entityList.stream()
-                .map(ClientEntity::getId)
-                .collect(Collectors.toList());
+
+    public ClientEntity convertDTO(ClientDTO clientDTO){
+        return ClientEntity.builder()
+                .name(clientDTO.getName())
+                .document(clientDTO.getDocument())
+                .email(clientDTO.getEmail())
+                .phone(clientDTO.getPhone())
+                .deliveryAddress(clientDTO.getDeliveryAddress())
+                .build();
     }
 }
