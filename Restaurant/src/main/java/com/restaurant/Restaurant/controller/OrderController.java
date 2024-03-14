@@ -22,7 +22,7 @@ public class OrderController {
     }
 
     @PatchMapping(path = "/{uuid}/delivered/{timestamp}")
-    public ResponseEntity<?> updateOrderDelivered(@PathVariable String uuid, @PathVariable LocalDateTime timestamp, OrderDTO orderDTO){
-        return new ResponseEntity<>(service.updateOrderDelivered(uuid, timestamp, orderDTO), HttpStatus.OK);
+    public ResponseEntity<?> updateOrderDelivered(@PathVariable String uuid, @PathVariable LocalDateTime timestamp){
+        return new ResponseEntity<>(service.updateOrderDelivered(uuid, timestamp), HttpStatus.OK);
     }
 }

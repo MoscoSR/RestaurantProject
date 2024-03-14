@@ -153,7 +153,7 @@ class OrderServiceImplTest {
         Mockito.when(orderRepository.save(any(OrderEntity.class))).thenReturn(orderEntity);
 
         var result = orderService.updateOrderDelivered
-                (expectedDtoResult.getUuid(), LocalDateTime.parse("2024-03-11T15:05:00"), orderDTO);
+                (expectedDtoResult.getUuid(), LocalDateTime.parse("2024-03-11T15:05:00"));
 
         assertNotNull(result);
         assertEquals(expectedDtoResult, result);

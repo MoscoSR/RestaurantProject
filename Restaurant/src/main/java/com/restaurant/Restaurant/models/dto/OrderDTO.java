@@ -1,5 +1,7 @@
 package com.restaurant.Restaurant.models.dto;
 
+import com.restaurant.Restaurant.entity.ClientEntity;
+import com.restaurant.Restaurant.entity.ProductEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
